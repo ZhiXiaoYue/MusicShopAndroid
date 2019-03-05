@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="afterDescendants">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:paddingTop="8dp"
+            android:id="@+id/text_view_com_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="20dp"/>
+
+        <TextView
+            android:paddingTop="5dp"
+            android:paddingBottom="8dp"
+            android:id="@+id/text_view_com_artists_and_album"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/slategray"
+            android:textSize="16dp"/>
+
+        <Button
+            android:id="@+id/comdelete_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:focusable="false"
+            android:text="删除" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

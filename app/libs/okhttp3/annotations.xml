@@ -1,0 +1,6 @@
+<root>
+    <item
+        name='okhttp3.OkHttpClient.Builder okhttp3.OkHttpClient.Builder sslSocketFactory(javax.net.ssl.SSLSocketFactory)'>
+        <annotation name='android.support.annotation.NonNull' />
+    </item>
+</root>
