@@ -16,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+    private Button testButton;
     ImageButton menu;
     @SuppressLint("ResourceAsColor")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -64,7 +66,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(MainActivity.this,
                         SearchActivity.class);
                 startActivity(intent);
-       }
+            }
+        });
+        testButton = findViewById(R.id.test_botton);
+        testButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,
+                        RecordPrepareActivity.class);
+                startActivity(intent);
+            }
         });
         ImageView button_pic= findViewById(R.id.imageMenu);
 

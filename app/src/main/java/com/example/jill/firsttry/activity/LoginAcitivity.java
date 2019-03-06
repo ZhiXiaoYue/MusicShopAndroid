@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,15 +36,24 @@ import okhttp3.Response;
 
 public class LoginAcitivity extends Activity {
     private EditText phoneText;
-//    private EditText verifyNum;
-
+    //状态码
+    public static final int GET_DATA_SUCCESS = 1;
+    public static final int NETWORK_ERROR = 2;
+    public static final int SERVER_ERROR = 3;
     final OkHttpClient client = new OkHttpClient();
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg){
-
+            switch (msg.what){
+                case NETWORK_ERROR:
+                    Toast.makeText(LoginAcitivity.this, "验证码发送失败，请检查网络连接", Toast.LENGTH_LONG).show();
+                    break;
+                case SERVER_ERROR:
+                    Toast.makeText(LoginAcitivity.this, "服务器发生错误，请联系客服", Toast.LENGTH_LONG).show();
+                    break;
+            }
             if(msg.what==1){
                 String ReturnMessage = (String) msg.obj;
                 Log.i("获取的返回信息",ReturnMessage);
@@ -79,9 +89,6 @@ public class LoginAcitivity extends Activity {
                 else{
                     Toast.makeText(LoginAcitivity.this, "验证码发送失败，请检查手机号", Toast.LENGTH_LONG).show();
                 }
-            }
-            else{
-                Toast.makeText(LoginAcitivity.this, "验证码发送失败，请检查网络连接", Toast.LENGTH_LONG).show();
             }
         }
     };

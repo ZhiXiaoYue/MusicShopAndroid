@@ -27,14 +27,14 @@
 
     <TextView
         android:id="@+id/prepare_text_songName"
-        android:layout_width="135dp"
-        android:layout_height="31dp"
+        android:layout_width="193dp"
+        android:layout_height="63dp"
         android:layout_marginBottom="450dp"
         android:layout_marginEnd="2dp"
         android:layout_marginLeft="150dp"
         android:layout_marginRight="2dp"
         android:layout_marginStart="150dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="15dp"
         android:text="@string/song_nameInPrepare"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -44,7 +44,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.358" />
 
-    <ImageView
+    <com.example.jill.firsttry.Utils.ImageUtil
         android:id="@+id/prepare_image_songIcon"
         tools:layout_conversion_absoluteHeight="100dp"
         tools:layout_conversion_absoluteWidth="100dp"
@@ -55,7 +55,6 @@
         android:layout_marginRight="200dp"
         android:layout_marginStart="1dp"
         android:layout_marginTop="36dp"
-        android:src="@mipmap/mm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +69,7 @@
         android:layout_marginLeft="150dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="150dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:text="@string/singerInPrepare"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -96,7 +95,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_btn2"
+        app:layout_constraintTop_toBottomOf="@+id/prepare_button_listen"
         tools:layout_conversion_absoluteHeight="40dp"
         tools:layout_conversion_absoluteWidth="100dp" />
 
