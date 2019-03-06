@@ -1,4 +1,4 @@
-package com.example.jill.firsttry.others;
+package com.example.jill.firsttry.model;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;

@@ -2,23 +2,15 @@ package com.example.jill.firsttry.Utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Environment;
-import android.util.Log;
-import com.example.jill.firsttry.model.HttpUtil;
+
 import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.download.DownloadBean;
-import com.example.jill.firsttry.model.search.Keys;
-import com.example.jill.firsttry.model.search.SearchBean;
 import com.google.gson.Gson;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class DownloadCompany {
 

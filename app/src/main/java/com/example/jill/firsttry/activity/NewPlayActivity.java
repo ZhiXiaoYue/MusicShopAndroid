@@ -18,8 +18,7 @@ import com.example.jill.firsttry.forLyrics.utils.TimeUtils;
 import com.example.jill.firsttry.forLyrics.widget.AbstractLrcView;
 import com.example.jill.firsttry.forLyrics.widget.ManyLyricsView;
 import com.example.jill.firsttry.model.Song;
-import com.example.jill.firsttry.model.download.DownloadBean;
-import com.example.jill.firsttry.others.AppContext;
+import com.example.jill.firsttry.model.global_val.AppContext;
 import com.zml.libs.widget.MusicSeekBar;
 
 import java.io.FileInputStream;
@@ -33,7 +32,7 @@ import java.io.InputStream;
 public class NewPlayActivity extends AppCompatActivity {
 
 
-    private com.example.jill.firsttry.others.AppContext appContext;
+    private AppContext appContext;
 
 
     /**

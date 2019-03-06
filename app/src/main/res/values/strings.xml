@@ -10,4 +10,6 @@
     <string name="goto_search_text">搜索歌词</string>
     <string name="load_error_text">加载歌词出错</string>
     <string name="nonsupport_text">不支持该格式歌词文件显示</string>
+    <string name="song_nameInPrepare">Song Name</string>
+    <string name="singerInPrepare">singer</string>
 </resources>

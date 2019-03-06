@@ -1,4 +1,4 @@
-package com.example.jill.firsttry.others;
+package com.example.jill.firsttry.model.global_val;
 
 
 /**

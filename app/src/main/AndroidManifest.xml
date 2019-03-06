@@ -19,7 +19,7 @@
         android:supportsRtl="true"
 
         android:theme="@style/AppTheme"
-        android:name="com.example.jill.firsttry.others.AppContext"
+        android:name="com.example.jill.firsttry.model.global_val.AppContext"
         android:fitsSystemWindows="true">
         <activity android:name=".activity.WelcomeAtivity"
             android:theme="@style/FullScreen">
@@ -56,6 +56,8 @@
         <activity android:name=".activity.VerifyActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activity.SetActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".activity.RecordPrepareActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activity.CompanyListActivity"
             android:theme="@style/Theme.AppCompat.Light"/>

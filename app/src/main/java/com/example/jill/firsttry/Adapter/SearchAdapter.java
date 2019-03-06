@@ -1,7 +1,6 @@
 package com.example.jill.firsttry.Adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +10,7 @@ import android.widget.TextView;
 import com.example.jill.firsttry.R;
 import com.example.jill.firsttry.Utils.DownloadCompany;
 import com.example.jill.firsttry.model.Song;
-import com.example.jill.firsttry.model.search.Keys;
-import com.example.jill.firsttry.others.AppContext;
+import com.example.jill.firsttry.model.global_val.AppContext;
 import java.util.ArrayList;
 //import android.support.v7.app.AppCompatActivity;
 

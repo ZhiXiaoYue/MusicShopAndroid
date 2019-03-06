@@ -1,9 +1,8 @@
-package com.example.jill.firsttry.others;
+package com.example.jill.firsttry.model.global_val;
 import android.app.Application;
 
 import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.download.DownloadBean;
-import com.example.jill.firsttry.model.search.Keys;
 
 import java.util.ArrayList;
 

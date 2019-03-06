@@ -1,10 +1,7 @@
 package com.example.jill.firsttry.activity;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -13,7 +10,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,7 +21,7 @@ import com.example.jill.firsttry.forLyrics.utils.TimeUtils;
 import com.example.jill.firsttry.forLyrics.widget.AbstractLrcView;
 import com.example.jill.firsttry.forLyrics.widget.ManyLyricsView;
 import com.example.jill.firsttry.model.Song;
-import com.example.jill.firsttry.others.AppContext;
+import com.example.jill.firsttry.model.global_val.AppContext;
 import com.zml.libs.widget.MusicSeekBar;
 
 import java.io.File;
@@ -33,7 +29,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 
 /**
  * 多行歌词

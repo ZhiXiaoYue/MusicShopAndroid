@@ -22,8 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jill.firsttry.R;
-import com.example.jill.firsttry.others.AppContext;
-import com.example.jill.firsttry.others.UserBean;
+import com.example.jill.firsttry.model.global_val.AppContext;
+import com.example.jill.firsttry.model.global_val.UserBean;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.util.Timer;

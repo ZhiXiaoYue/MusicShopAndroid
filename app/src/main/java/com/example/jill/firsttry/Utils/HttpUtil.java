@@ -1,4 +1,4 @@
-package com.example.jill.firsttry.model;
+package com.example.jill.firsttry.Utils;
 
 import org.json.JSONObject;
 

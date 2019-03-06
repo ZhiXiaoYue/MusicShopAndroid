@@ -18,10 +18,9 @@ import android.widget.TextView;
 
 import com.example.jill.firsttry.Lab.CompanyLab;
 import com.example.jill.firsttry.R;
-import com.example.jill.firsttry.activity.ListenActivity;
 import com.example.jill.firsttry.activity.ManyActivity;
 import com.example.jill.firsttry.model.Song;
-import com.example.jill.firsttry.others.AppContext;
+import com.example.jill.firsttry.model.global_val.AppContext;
 
 import java.io.File;
 import java.util.List;
