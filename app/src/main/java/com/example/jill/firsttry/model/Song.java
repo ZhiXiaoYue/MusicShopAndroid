@@ -1,6 +1,6 @@
 package com.example.jill.firsttry.model;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
 public class Song extends Base{
     private String album;//专辑名
