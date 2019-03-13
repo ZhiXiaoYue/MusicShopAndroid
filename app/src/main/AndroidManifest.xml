@@ -23,28 +23,18 @@
         android:fitsSystemWindows="true">
         <activity android:name=".activity.WelcomeAtivity"
             android:theme="@style/FullScreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity android:name=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <!--
-        <activity android:name=".activity.SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-         -->
+            android:theme="@style/AppTheme.NoActionBar">
+    </activity>
 
         <activity android:name=".activity.SearchActivity"
             android:theme="@style/AppTheme.NoActionBar">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <action android:name="android.intent.action.SEARCH"/>
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-        <meta-data  android:name="android.app.searchable"
-            android:resource="@xml/searchable" />
         </activity>
 
         <activity android:name=".activity.GuideAcitivity"
@@ -63,8 +53,14 @@
             android:theme="@style/Theme.AppCompat.Light"/>
         <activity android:name=".activity.MysongListActivity"
             android:theme="@style/Theme.AppCompat.Light"/>
-        <activity android:name=".activity.ManyActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".activity.ManyActivity">
+            android:theme="@style/AppTheme.NoActionBar"
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>>
         <activity android:name=".activity.NewPlayActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activity.ListenActivity"

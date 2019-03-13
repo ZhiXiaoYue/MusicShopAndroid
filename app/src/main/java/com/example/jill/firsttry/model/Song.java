@@ -2,12 +2,15 @@ package com.example.jill.firsttry.model;
 
 import java.util.ArrayList;
 
-public class Song {
-    private String album;
-    private String sid;
-    private String singerName;
-    private String sname;
-    private ArrayList<String> userRecords;
+public class Song extends Base{
+    private String album;//专辑名
+    private String albumPic;//图片url
+    private String filePath;//歌曲下载url
+    private String instrumental;//伴奏下载url
+    private String lyric;//歌词下载url
+    private int sid;//歌曲id
+    private String singerName;//歌手名
+    private String sname;//歌曲名
 
     public String getAlbum() {
         return album;
@@ -17,11 +20,11 @@ public class Song {
         this.album = album;
     }
 
-    public String getSid() {
+    public int getSid() {
         return sid;
     }
 
-    public void setSid(String sid) {
+    public void setSid(int sid) {
         this.sid = sid;
     }
 
@@ -41,11 +44,36 @@ public class Song {
         this.sname = sname;
     }
 
-    public ArrayList<String> getUserRecords() {
-        return userRecords;
+    public String getAlbumPic() {
+        return albumPic;
     }
 
-    public void setUserRecords(ArrayList<String> userRecords) {
-        this.userRecords = userRecords;
+    public void setAlbumPic(String albumPic) {
+        this.albumPic = albumPic;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public String getInstrumental() {
+        return instrumental;
+    }
+
+    public void setInstrumental(String instrumental) {
+        this.instrumental = instrumental;
+    }
+
+    public String getLyric() {
+        return lyric;
+    }
+
+    public void setLyric(String lyric) {
+        this.lyric = lyric;
     }
 }
+

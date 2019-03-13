@@ -3,10 +3,10 @@ package com.example.jill.firsttry.activity;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,7 +32,7 @@ import java.io.InputStream;
 public class NewPlayActivity extends AppCompatActivity {
 
 
-    private AppContext appContext;
+    private com.example.jill.firsttry.model.global_val.AppContext appContext;
 
 
     /**

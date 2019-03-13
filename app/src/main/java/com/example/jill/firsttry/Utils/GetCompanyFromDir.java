@@ -32,7 +32,7 @@ public class GetCompanyFromDir {
             companyKey.setSname(fileAfterSplitStringList[0]);
             companyKey.setSingerName(fileAfterSplitStringList[1]);
             companyKey.setAlbum(fileAfterSplitStringList[2]);
-            companyKey.setSid(fileAfterSplitStringList[3]);
+            companyKey.setSid(new Integer(fileAfterSplitStringList[3]));
             companyKeys.add(companyKey);
         }
         return companyKeys;

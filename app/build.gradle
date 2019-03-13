@@ -3,19 +3,33 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.jill.firsttry"
-        minSdkVersion 16
-        targetSdkVersion 27
+//        minSdkVersion 16
+//        targetSdkVersion 27
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        release {
+
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            buildConfigField 'String', 'ENDPOINT', '"http://58.87.73.51:8080/musicshop/"'
+        }
+
+        release {
+            minifyEnabled false //是否混淆
+            zipAlignEnabled true //失败开启zip对齐
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', 'ENDPOINT', '"http://58.87.73.51:8080/musicshop/api/"'
         }
     }
 }
+
+
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -25,8 +39,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.android.support:design:27.1.1'
-    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    implementation 'com.google.code.gson:gson:2.8.4'
+
+//    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+//    implementation 'com.google.code.gson:gson:2.8.4'
+
     implementation 'com.githang:status-bar-compat:0.7'
     implementation 'com.android.support:support-v4:27.1.1'
     testImplementation 'junit:junit:4.12'
@@ -34,6 +50,30 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.github.zhangliangming:SeekBar:v1.3'
+
+    //    butterknife
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    //    okhttp
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+
+    //    retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+
+    //    gson
+    implementation 'com.google.code.gson:gson:2.8.2'
+
+    //    rxjava
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+
+    //    event bus
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
+    //Recycler View header
+    implementation 'com.github.jdsjlzx:LRecyclerView:1.5.0'
 
 }
 repositories {

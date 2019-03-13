@@ -33,7 +33,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class LoginAcitivity extends Activity {
+public class LoginAcitivity extends BaseActivity {
     private EditText phoneText;
 //    private EditText verifyNum;
 

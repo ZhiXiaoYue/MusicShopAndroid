@@ -31,7 +31,7 @@ import okhttp3.Response;
 
 
 @SuppressLint("Registered")
-public class VerifyActivity  extends AppCompatActivity {
+public class VerifyActivity  extends BaseCommonActivity {
     private EditText verifyCode;
 
     final OkHttpClient client = new OkHttpClient();
@@ -57,6 +57,7 @@ public class VerifyActivity  extends AppCompatActivity {
                 if(A.equals("Success")){
                     app.setUser(userBean);
                     app.setState(A);
+                    sp.setToken(userBean.getData());
                     Toast.makeText(VerifyActivity.this, "登录成功", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(VerifyActivity.this,
                             MainActivity.class);
