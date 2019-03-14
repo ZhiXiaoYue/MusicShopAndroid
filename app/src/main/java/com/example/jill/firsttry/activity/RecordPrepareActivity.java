@@ -79,7 +79,7 @@ public class RecordPrepareActivity extends Activity {
         Song song = new Song();
         song.setSname("原谅（Cover张玉华");
         song.setSingerName("刘瑞琦");
-        song.setSid("40");
+        song.setSid(40);
         song.setAlbum("头号粉丝");
         song.setAlbumPic("static/album_thumbnails/刘瑞琦-头号粉丝.jpg");
         song.setFilePath("static/music/原谅（Cover张玉华）-刘瑞琦.mp3");

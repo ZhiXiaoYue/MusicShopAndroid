@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.jill.firsttry.R;
-import com.example.jill.firsttry.Utils.Consts;
 import com.example.jill.firsttry.forLyrics.LyricsReader;
 import com.example.jill.firsttry.forLyrics.utils.ColorUtils;
 import com.example.jill.firsttry.forLyrics.utils.TimeUtils;
@@ -113,9 +112,6 @@ public class ManyActivity extends AppCompatActivity {
      * 歌曲唤醒
      */
     private final int MUSIC_RESUME = 7;
-
-    public String record;
-
 
     //private final String TAG = FloatActivity.class.getName();
 
@@ -291,8 +287,7 @@ public class ManyActivity extends AppCompatActivity {
                     //mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.aiqingyu);
                     Song keys = appContext.getSong();
                     mMediaPlayer = new MediaPlayer();
-                   // String fileUrl = "/mnt/sdcard/MusicShopDownLoad/Songs/"+keys.getSname()+ "-" + keys.getSingerName() + "-" +keys.getAlbum()+"-"+keys.getSid()+".mp3";
-                    String fileUrl = Consts.SONG_DIR+"yuanliang.mp3";
+                    String fileUrl = "/mnt/sdcard/MusicShopDownLoad/Songs/"+keys.getSname()+ "-" + keys.getSingerName() + "-" +keys.getAlbum()+"-"+keys.getSid()+".mp3";
                     mMediaPlayer.reset();
                     try {
                         mMediaPlayer.setDataSource(fileUrl);
@@ -312,10 +307,8 @@ public class ManyActivity extends AppCompatActivity {
                     });
 
                     //初始化录音
-                   //String fileName = keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".mp3";
-                    String fileName ="yuanliang.mp3";
-
-                    initRecorder(Consts.SAVE_SONG_DIR, fileName);
+                    String fileName = keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".mp3";
+                    initRecorder("/mnt/sdcard/MusicShopDownLoad/MySongs//", fileName);
 
                     //快进事件
                     mMediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
@@ -392,8 +385,7 @@ public class ManyActivity extends AppCompatActivity {
                 Song keys = appContext.getSong();
                 InputStream inputStream = null;
                 try {
-                    //inputStream = new FileInputStream("/mnt/sdcard/MusicShopDownLoad/Songs/" + keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".krc");
-                    inputStream = new FileInputStream(Consts.LYRIC_DIR+"yuanliang.krc");
+                    inputStream = new FileInputStream("/mnt/sdcard/MusicShopDownLoad/Songs/" + keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".krc");
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -404,9 +396,7 @@ public class ManyActivity extends AppCompatActivity {
                     LyricsReader lyricsReader = new LyricsReader();
                     byte[] data = new byte[inputStream.available()];
                     inputStream.read(data);
-                   //lyricsReader.loadLrc(data, null, "/mnt/sdcard/MusicShopDownLoad/Songs/" + keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".krc");
-                    lyricsReader.loadLrc(data, null, Consts.LYRIC_DIR+"yuanliang.krc");
-
+                    lyricsReader.loadLrc(data, null, "/mnt/sdcard/MusicShopDownLoad/Songs/" + keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".krc");
                     mManyLyricsView.setLyricsReader(lyricsReader);
                     //
                     if (mMediaPlayer != null && mMediaPlayer.isPlaying() && mManyLyricsView.getLrcStatus() == AbstractLrcView.LRCSTATUS_LRC && mManyLyricsView.getLrcPlayerStatus() != AbstractLrcView.LRCPLAYERSTATUS_PLAY) {
@@ -532,8 +522,7 @@ public class ManyActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         Song keys = appContext.getSong();
-                        //File file=new File("/mnt/sdcard/MusicShopDownLoad/MySongs/"+keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".mp3");
-                        File file=new File(Consts.SAVE_SONG_DIR +"yuanliang"+ ".mp3");
+                        File file=new File("/mnt/sdcard/MusicShopDownLoad/MySongs/"+keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".mp3");
                         file.delete();
                     }
                 }).show();

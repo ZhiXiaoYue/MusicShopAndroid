@@ -68,14 +68,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
             }
         });
-        testButton = findViewById(R.id.test_botton);
-        testButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,
-                        RecordPrepareActivity.class);
-                startActivity(intent);
-            }
-        });
+//        testButton = findViewById(R.id.test_botton);
+//        testButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this,
+//                        RecordPrepareActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         ImageView button_pic= findViewById(R.id.imageMenu);
 
         button_pic.setOnClickListener(new View.OnClickListener() {

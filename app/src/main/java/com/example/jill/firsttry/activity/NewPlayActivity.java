@@ -32,7 +32,7 @@ import java.io.InputStream;
 public class NewPlayActivity extends AppCompatActivity {
 
 
-    private com.example.jill.firsttry.model.global_val.AppContext appContext;
+    private AppContext appContext;
 
 
     /**

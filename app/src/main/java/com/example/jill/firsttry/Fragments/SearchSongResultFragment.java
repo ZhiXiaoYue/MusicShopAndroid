@@ -36,6 +36,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -114,8 +115,12 @@ public class SearchSongResultFragment extends BaseCommonFragment {
 //               // List<Song> Songs= new Gson().fromJson(baseResponse.data,(List<Song>).class);
 //            }
 //        });
-        call_1(content);
 
+       // call_1(content);
+        Song song=testWithFakeData();
+        List<Song> songs=new ArrayList<Song>();
+        songs.add(song);
+        adapter.setData(songs);
     }
 
     private void call_1(String songname) {
@@ -187,6 +192,18 @@ public class SearchSongResultFragment extends BaseCommonFragment {
         });
     }
 
+    private Song testWithFakeData(){
+        Song song = new Song();
+        song.setSname("原谅（Cover张玉华");
+        song.setSingerName("刘瑞琦");
+        song.setSid(40);
+        song.setAlbum("头号粉丝");
+        song.setAlbumPic("static/album_thumbnails/刘瑞琦-头号粉丝.jpg");
+        song.setFilePath("static/music/原谅（Cover张玉华）-刘瑞琦.mp3");
+        song.setInstrumental("static/instru/原谅（Cover张玉华）刘瑞琦.mp3");
+        song.setLyric("static/lyric/原谅（Cover张玉华）刘瑞琦.krc");
+        return song;
+    }
 
     @Override
     protected void initDatas() {
