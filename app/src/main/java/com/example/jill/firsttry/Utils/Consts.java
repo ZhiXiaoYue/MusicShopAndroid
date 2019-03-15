@@ -1,6 +1,8 @@
 package com.example.jill.firsttry.Utils;
 
 
+import android.os.Environment;
+
 import com.example.jill.firsttry.BuildConfig;
 
 /**
@@ -14,12 +16,16 @@ public class Consts {
     public static final String TOKEN="token";
     public static final String SEARCH_TYPE_FOR_SNAME="0";
     public static final String SEARCH_TYPE_FOR_SINGER="1";
-    public static final String DIR="/storage/1417-3E06/Android/MusicShop/";
+    public static final String DIR= Environment.getExternalStorageDirectory().getPath()+"/MusicShop/";
 
     public static final String SAVE_SONG_DIR=DIR+"MySong/";
     public static final String COMPANGY_DIR=DIR+"Company/";
     public static final String LYRIC_DIR=DIR+"Lyric/";
     public static final String SONG_DIR=DIR+"Song/";
+
+    public static final String Cache_DIR=DIR+"Cache/";
+
+    public static final int RESPONSE_OK=200;
 
     public static final long TIME_OUT = 5;
     public static final String ID = "ID";
