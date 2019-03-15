@@ -385,66 +385,38 @@ public class NewPlayActivity extends AppCompatActivity {
      * 加载歌词文件
      */
     private void loadLrcFile() {
-
-        new AsyncTask<String, Integer, String>() {
-
+        HttpUtil.sendOkHttpRequest(Consts.ENDPOINT + currentSong.getLyric(), new Callback() {
             @Override
-            protected String doInBackground(String... strings) {
-
-                HttpUtil.sendOkHttpRequest(Consts.ENDPOINT + currentSong.getLyric(), new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        mHandler.sendEmptyMessage(NETWORK_ERROR);
-                        Log.d("NETERROR", "出错了");
-                    }
-
-                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) {
-                        if (response.code() == 200) {
-                            Log.d("NETERROR", "没出错");
-                            try {
-                                InputStream inputStream = null;
-                                inputStream = response.body().byteStream();
-                                try {
-                                    inputStream.reset();
-                                } catch (Exception e) {
-                                    Log.d("流错误", "onResponse: "+e.toString());
-                                }
-                                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                                byte[] bytes = new byte[512];
-                                int len = -1;
-                                while ((len = inputStream.read(bytes)) != -1) {
-                                    bos.write(bytes, 0, len);
-                                }
-                                bos.flush();
-                                //把 bytearrayinputstream 转换成inputstream
-                                InputStream decodeIs = new ByteArrayInputStream(bos.toByteArray());
-                                inputStream=decodeIs;
-                                LyricsReader lyricsReader = new LyricsReader();
-                                byte[] data = new byte[inputStream.available()];
-                                inputStream.read(data);
-                                lyricsReader.loadLrc(data, null, "/mnt/sdcard/MusicShopDownLoad/Songs/" + currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".krc");
-                                mManyLyricsView.setLyricsReader(lyricsReader);
-                                //
-                                if (mMediaPlayer != null && mMediaPlayer.isPlaying() && mManyLyricsView.getLrcStatus() == AbstractLrcView.LRCSTATUS_LRC && mManyLyricsView.getLrcPlayerStatus() != AbstractLrcView.LRCPLAYERSTATUS_PLAY) {
-                                    mManyLyricsView.play(mMediaPlayer.getCurrentPosition());
-                                }
-
-                                inputStream.close();
-                            } catch (Exception e) {
-                                mManyLyricsView.setLrcStatus(AbstractLrcView.LRCSTATUS_ERROR);
-                                //Log.e(TAG, e.toString());
-                                e.printStackTrace();
-                            }
-                        } else {
-                            mHandler.sendEmptyMessage(NETWORK_ERROR);
-                        }
-                    }
-                });
-                return null;
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                mHandler.sendEmptyMessage(NETWORK_ERROR);
+                Log.d("NETERROR", "出错了");
             }
-        }.execute("");
+
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                if (response.code() == Consts.RESPONSE_OK) {
+                    //Log.d("NETERROR", "没出错" + Consts.ENDPOINT + currentSong.getLyric());
+                    try {
+                        LyricsReader lyricsReader = new LyricsReader();
+                        byte[] data = response.body().bytes();
+                        lyricsReader.loadLrc(data,null,Consts.Cache_DIR+currentSong.getSname()+"-"+currentSong.getSingerName()+"-"+currentSong.getAlbum()+"-"+currentSong.getSid()+".krc");
+                        mManyLyricsView.setLyricsReader(lyricsReader);
+                        if (mMediaPlayer != null && mMediaPlayer.isPlaying() && mManyLyricsView.getLrcStatus() == AbstractLrcView.LRCSTATUS_LRC && mManyLyricsView.getLrcPlayerStatus() != AbstractLrcView.LRCPLAYERSTATUS_PLAY) {
+                            mManyLyricsView.play(mMediaPlayer.getCurrentPosition());
+                        }
+                    } catch (NullPointerException e) {
+                        mManyLyricsView.setLrcStatus(AbstractLrcView.LRCSTATUS_ERROR);
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        mManyLyricsView.setLrcStatus(AbstractLrcView.LRCSTATUS_ERROR);
+                        e.printStackTrace();
+                    }
+                } else {
+                    //Log.d("NETERROR", "有response但出错" + Consts.ENDPOINT + currentSong.getLyric());
+                }
+            }
+        });
     }
 
     private Runnable mPlayRunnable = new Runnable() {
