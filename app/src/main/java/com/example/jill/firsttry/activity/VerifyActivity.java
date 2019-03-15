@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.jill.firsttry.Fragments.SearchSongResultFragment;
 import com.example.jill.firsttry.R;
 import com.example.jill.firsttry.model.global_val.AppContext;
 import com.example.jill.firsttry.model.global_val.UserBean;
@@ -57,11 +58,17 @@ public class VerifyActivity  extends BaseCommonActivity {
                 if(A.equals("Success")){
                     app.setUser(userBean);
                     app.setState(A);
-                    sp.setToken(userBean.getData());
                     Toast.makeText(VerifyActivity.this, "登录成功", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(VerifyActivity.this,
-                            MainActivity.class);
-                    startActivity(intent);
+
+                    //判断是否是从其他界面跳转到登录界面，如果是则登录后要去其他界面
+                    if(SearchSongResultFragment.SEARCH_BEFORE_LOGIN){
+                        finish();
+                    }else {
+                        Intent intent = new Intent(VerifyActivity.this,
+                                MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
                 else{
                     Toast.makeText(VerifyActivity.this, "输入验证码有误", Toast.LENGTH_LONG).show();

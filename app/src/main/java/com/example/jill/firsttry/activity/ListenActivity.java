@@ -3,10 +3,10 @@ package com.example.jill.firsttry.activity;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -186,7 +186,7 @@ public class ListenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //设置状态栏可见；
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-        setContentView(R.layout.activity_many);
+        setContentView(R.layout.activity_new_play);
 
 
         appContext = (AppContext)getApplication();
@@ -412,7 +412,7 @@ public class ListenActivity extends AppCompatActivity {
                     LyricsReader lyricsReader = new LyricsReader();
                     byte[] data = new byte[inputStream.available()];
                     inputStream.read(data);
-                    lyricsReader.loadLrc(data, null, "/mnt/sdcard/MusicShopDownLoad/Songs/"+keys.getSname() + "-" + keys.getSingerName() + "-" +keys.getAlbum()+"-"+keys.getSid()+".hrc");
+                    lyricsReader.loadLrc(data, null, "/mnt/sdcard/MusicShopDownLoad/Songs/"+keys.getSname() + "-" + keys.getSingerName() + "-" +keys.getAlbum()+"-"+keys.getSid()+".krc");
                     mManyLyricsView.setLyricsReader(lyricsReader);
                     //
                     if (mMediaPlayer != null && mMediaPlayer.isPlaying() && mManyLyricsView.getLrcStatus() == AbstractLrcView.LRCSTATUS_LRC && mManyLyricsView.getLrcPlayerStatus() != AbstractLrcView.LRCPLAYERSTATUS_PLAY) {

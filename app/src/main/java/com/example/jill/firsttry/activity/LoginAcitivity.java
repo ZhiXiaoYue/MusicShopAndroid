@@ -20,7 +20,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.jill.firsttry.Fragments.SearchSongResultFragment;
 import com.example.jill.firsttry.R;
+import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.global_val.AppContext;
 import com.example.jill.firsttry.model.global_val.UserBean;
 import com.google.gson.Gson;
@@ -40,7 +42,12 @@ public class LoginAcitivity extends BaseActivity {
     public static final int GET_DATA_SUCCESS = 1;
     public static final int NETWORK_ERROR = 2;
     public static final int SERVER_ERROR = 3;
+    //代表LoginActivity的请求码
+    public static final int LOGING_ACTIVITY=1;
+    //登陆后返回的结果码（传到跳转到这个activity的活动）
+    public static final int LOGING_RESULT_OK=1;
     final OkHttpClient client = new OkHttpClient();
+    private static int activityCode;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
@@ -71,10 +78,15 @@ public class LoginAcitivity extends BaseActivity {
                     app.setState(A);//将返回值存入后台bean中
                     app.setUser(userBean);
                     Toast.makeText(LoginAcitivity.this, "登录成功", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(LoginAcitivity.this,
-                            MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    //判断是否是从其他界面跳转来的
+                    if(SearchSongResultFragment.SEARCH_BEFORE_LOGIN){
+                        finish();
+                    }else {
+                        Intent intent = new Intent(LoginAcitivity.this,
+                                MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
                 else if(A.equals("Need to Verify")){
                     userBean.setName(phoneText.getText().toString().trim());
@@ -82,7 +94,7 @@ public class LoginAcitivity extends BaseActivity {
                     app.setUser(userBean);
                     Toast.makeText(LoginAcitivity.this, "验证码已发送，请输入", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(LoginAcitivity.this,
-                            VerifyActivity.class);
+                                VerifyActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -204,6 +216,16 @@ public class LoginAcitivity extends BaseActivity {
                 }
             }
         }).start();
+    }
+
+    /**
+     * 未登陆时别的界面调用此方法
+     * @param context 代表别的界面的上下文context
+     */
+    public static void actionStartForResult(Context context,int activityCode){
+        Intent intent=new Intent(context,LoginAcitivity.class);
+        LoginAcitivity.activityCode=activityCode;
+        ((Activity)context).startActivityForResult(intent,LOGING_ACTIVITY);
     }
 }
 

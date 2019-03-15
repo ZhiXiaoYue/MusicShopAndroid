@@ -23,11 +23,11 @@
         android:fitsSystemWindows="true">
         <activity android:name=".activity.WelcomeAtivity"
             android:theme="@style/FullScreen">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -40,7 +40,9 @@
         <activity android:name=".activity.GuideAcitivity"
             android:theme="@style/FullScreen"/>
         <activity android:name=".activity.LoginAcitivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTask">
+            </activity>
         <activity android:name=".activity.User_infoActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activity.VerifyActivity"
@@ -55,11 +57,11 @@
             android:theme="@style/Theme.AppCompat.Light"/>
         <activity android:name=".activity.ManyActivity">
             android:theme="@style/AppTheme.NoActionBar"
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>>
         <activity android:name=".activity.NewPlayActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
