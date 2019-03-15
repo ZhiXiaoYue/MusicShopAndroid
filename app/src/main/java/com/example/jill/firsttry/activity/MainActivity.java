@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.icu.text.AlphabeticIndex;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,30 +13,41 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jill.firsttry.Adapter.SongCardAdapter;
 import com.example.jill.firsttry.R;
+import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.global_val.AppContext;
 import com.example.jill.firsttry.model.global_val.UserBean;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-    private Button testButton;
+    private Song[] songs =  {testWithFakeData(), testWithFakeData(),testWithFakeData(),testWithFakeData()};//假数据
+    private List<Song> songList = new ArrayList<>();
     ImageButton menu;
+
+    public MainActivity() {
+    }
+
     @SuppressLint("ResourceAsColor")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -68,14 +80,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
             }
         });
-//        testButton = findViewById(R.id.test_botton);
-//        testButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this,
-//                        RecordPrepareActivity.class);
-//                startActivity(intent);
-//            }
-//        });
         ImageView button_pic= findViewById(R.id.imageMenu);
 
         button_pic.setOnClickListener(new View.OnClickListener() {
@@ -94,15 +98,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawerLayout = findViewById(R.id.activity_na);
 
         navigationView = findViewById(R.id.nav);
-        /*navigationView.getHeaderView(0).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(MainActivity.this,
-                            LoginAcitivity.class);
-                    startActivity(intent);
-                    drawerLayout.closeDrawers();//关闭导航菜单
-                }
-        });*/
 
         menu= findViewById(R.id.main_menu);
         menu.setOnClickListener(this);
@@ -169,6 +164,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
         });
+        /* 3.15
+         * 填入歌曲
+         */
+        initSongs();
+        RecyclerView recyclerView = findViewById(R.id.recycler_view_in_main);
+        GridLayoutManager layoutManager = new GridLayoutManager(this,3);
+        recyclerView.setLayoutManager(layoutManager);
+        final SongCardAdapter mAdapter = new SongCardAdapter(songList);
+        mAdapter.setOnItemClickListener(new SongCardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                RecordPrepareActivity.actionStart(MainActivity.this,songList.get(position));
+            }
+        });
+        recyclerView.setAdapter(mAdapter);
     }
     private void refresh() {
         finish();
@@ -176,7 +186,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
+        /**
+     * 装一点假的数据，后来删掉就好
+     */
+    private Song testWithFakeData(){
+        Song song = new Song();
+        song.setSname("原谅（Cover张玉华");
+        song.setSingerName("刘瑞琦");
+        song.setSid(40);
+        song.setAlbum("头号粉丝");
+        song.setAlbumPic("static/album_thumbnails/刘瑞琦-头号粉丝.jpg");
+        song.setFilePath("static/music/原谅（Cover张玉华）-刘瑞琦.mp3");
+        song.setInstrumental("static/instru/原谅（Cover张玉华）刘瑞琦.mp3");
+        song.setLyric("static/lyric/原谅（Cover张玉华）刘瑞琦.krc");
+        return song;
+    }
 
+    /**
+     * 初始化songList,将数组中的数据填入
+     */
+    private void initSongs(){
+        songList.clear();
+        songList.addAll(Arrays.asList(songs));
+    }
     private void initWindow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
