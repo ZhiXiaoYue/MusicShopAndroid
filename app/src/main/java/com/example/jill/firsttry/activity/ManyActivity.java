@@ -1,7 +1,9 @@
 package com.example.jill.firsttry.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -528,5 +530,10 @@ public class ManyActivity extends AppCompatActivity {
                 }).show();
     }
 
+    public static void actionStart(Context context,Song song){
+        Intent intent=new Intent(context,ManyActivity.class);
+        intent.putExtra("song",song);
+        context.startActivity(intent);
+    }
 
 }

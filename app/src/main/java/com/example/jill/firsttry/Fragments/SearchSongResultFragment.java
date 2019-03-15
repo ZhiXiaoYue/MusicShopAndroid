@@ -1,7 +1,9 @@
 package com.example.jill.firsttry.Fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +11,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +30,7 @@ import com.example.jill.firsttry.activity.RecordPrepareActivity;
 import com.example.jill.firsttry.activity.SearchActivity;
 import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.global_val.AppContext;
+import com.example.jill.firsttry.model.global_val.UserBean;
 import com.example.jill.firsttry.model.response.BaseResponse;
 import com.example.jill.firsttry.model.search.SearchBean;
 import com.google.gson.Gson;
@@ -39,12 +43,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.Address;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+
+import static android.content.ContentValues.TAG;
+
 
 /**
  * 歌曲，搜索结果
@@ -55,6 +59,11 @@ public class SearchSongResultFragment extends BaseCommonFragment {
     RecyclerView rv;
     private SongAdapter adapter;
     Gson gson;
+    AppContext appContext;
+    //代表LoginActivity的请求码
+    public static final int SEARCH_FRAMENT=1;
+    public static boolean SEARCH_BEFORE_LOGIN=false;
+
 
     public static SearchSongResultFragment newInstance() {
 
@@ -77,7 +86,6 @@ public class SearchSongResultFragment extends BaseCommonFragment {
 
         DividerItemDecoration decoration = new DividerItemDecoration(getActivity(), RecyclerView.VERTICAL);
         rv.addItemDecoration(decoration);
-
     }
 
 
@@ -89,14 +97,8 @@ public class SearchSongResultFragment extends BaseCommonFragment {
     private void show(int position) {
         Song data = adapter.getData(position);
         adapter.notifyDataSetChanged();
-        Intent intent = new Intent();
-        intent.setClass(getActivity(), RecordPrepareActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("Song", data);
-        intent.putExtras(bundle);
-        this.startActivity(intent);
+        RecordPrepareActivity.actionStart((Context) getActivity(),data);
     }
-
 
     private void fetchData(String content) {
 //        Api.getInstance().searchSong(content).subscribeOn(Schedulers.io())
@@ -128,15 +130,17 @@ public class SearchSongResultFragment extends BaseCommonFragment {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 //Toast.makeText(MainActivity.this,"failed",Toast.LENGTH_SHORT);
-                getActivity().runOnUiThread(
-                        new Runnable() {
-                            @SuppressLint("SetTextI18n")
-                            @Override
-                            public void run() {
-                                Toast.makeText(getActivity(),"网络不太好哦",Toast.LENGTH_SHORT);
-                            }
-                        }
-                );
+                System.out.println("失败了"+e.toString());
+                Log.d(TAG, "失败了 "+e.toString());
+//                getActivity().runOnUiThread(
+//                        new Runnable() {
+//                            @SuppressLint("SetTextI18n")
+//                            @Override
+//                            public void run() {
+//                                Toast.makeText(getActivity(),"网络不太好哦",Toast.LENGTH_SHORT);
+//                            }
+//                        }
+//                );
             }
 
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -144,35 +148,56 @@ public class SearchSongResultFragment extends BaseCommonFragment {
             public void onResponse(@NonNull Call call, @NonNull Response response)  {
                 if(response.code()==200){
                     try {
+
                         String responseString = response.body().string();
                         responseString=responseString.replaceAll("\"\\[","\\[");
                         responseString=responseString.replaceAll("\\]\"","\\]");
                         responseString=responseString.replaceAll("\\\\\"","\"");
                         System.out.println(responseString);
+                        Log.d(TAG, "获得请求数据"+responseString);
                         call_2(responseString);
                     }catch (IOException e){
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getActivity(),"出现了不可描述的错误。。。failed",Toast.LENGTH_SHORT);
-                            }
-                        });
+//                        getActivity().runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                Toast.makeText(getActivity(),"出现了不可描述的错误。。。failed",Toast.LENGTH_SHORT);
+//                            }
+//                        });
+                        Log.d(TAG, "请求失败了 "+e.toString());
                     }
                 }
-                else {
+                else if (response.code()==400){
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //textView1.setText("failed");
-                            Toast.makeText(getActivity(),"没能找到相关资源",Toast.LENGTH_SHORT);
+                            needLogin();
                         }
                     });
+
                 }
             }
-        },"token","13051393220^1537679154");
+        },"token", ((AppContext)getActivity().getApplication()).getUser());
 
 
     }
+
+    public void needLogin(){
+        Log.d(TAG, "请登录IIIII");
+        SEARCH_BEFORE_LOGIN=true;
+        Toast.makeText(getActivity(),"请先登录",Toast.LENGTH_SHORT).show();
+        startActivity(LoginAcitivity.class);
+    }
+
+
+//    @Override
+//    public void onActivityResult(int requestCode,int resultCode,Intent data){
+//        switch (requestCode){
+//            case LoginAcitivity.LOGING_ACTIVITY:
+//                if(resultCode==LoginAcitivity.LOGING_RESULT_OK){
+//                    this.appContext=(AppContext)getActivity().getApplication();
+//                }
+//        }
+//    }
 
     //使用listview显示搜索信息
     private void call_2(final String tring) {
@@ -182,12 +207,10 @@ public class SearchSongResultFragment extends BaseCommonFragment {
                 gson = new Gson();
                 SearchBean searchBean = gson.fromJson(tring, SearchBean.class);
                 adapter.setData(searchBean.getData());
-                if(searchBean.getStatusCode().equals("203")){
-                    Toast.makeText(getActivity(),"请先登录",Toast.LENGTH_SHORT);
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(), LoginAcitivity.class);
-                    getActivity().startActivity(intent);
-                }
+//                if(searchBean.getStatusCode().equals("203")){
+//                    Toast.makeText(getActivity(),"请先登录",Toast.LENGTH_SHORT);
+//                    LoginAcitivity.actionStart(getContext());
+//                }
             }
         });
     }
@@ -219,6 +242,7 @@ public class SearchSongResultFragment extends BaseCommonFragment {
 
         rv.setAdapter(adapter);
         gson=new Gson();
+
     }
 
     @Override
@@ -235,6 +259,7 @@ public class SearchSongResultFragment extends BaseCommonFragment {
     @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
+        SEARCH_BEFORE_LOGIN=false;
         super.onDestroy();
     }
 }

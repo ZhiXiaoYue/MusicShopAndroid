@@ -1,17 +1,28 @@
 package com.example.jill.firsttry.activity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.nfc.Tag;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jill.firsttry.R;
+import com.example.jill.firsttry.Utils.Consts;
+import com.example.jill.firsttry.Utils.HttpUtil;
 import com.example.jill.firsttry.forLyrics.LyricsReader;
 import com.example.jill.firsttry.forLyrics.utils.ColorUtils;
 import com.example.jill.firsttry.forLyrics.utils.TimeUtils;
@@ -21,19 +32,23 @@ import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.global_val.AppContext;
 import com.zml.libs.widget.MusicSeekBar;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 /**
- * 多行歌词
+ * 试听界面
  */
 public class NewPlayActivity extends AppCompatActivity {
-
-
-    private AppContext appContext;
-
 
     /**
      * 多行歌词视图
@@ -108,7 +123,16 @@ public class NewPlayActivity extends AppCompatActivity {
      */
     private final int MUSIC_RESUME = 7;
 
+    public static final int GET_DATA_SUCCESS = 8;
+    public static final int NETWORK_ERROR = 9;
+    public static final int SERVER_ERROR = 10;
+
+    //从准备界面传回的song
+    private Song currentSong;
+
     //private final String TAG = FloatActivity.class.getName();
+
+    final OkHttpClient client = new OkHttpClient();
 
     private Handler mHandler = new Handler() {
         @Override
@@ -165,6 +189,7 @@ public class NewPlayActivity extends AppCompatActivity {
                     //
                     mSongDurationTV.setText(TimeUtils.parseMMSSString(0));
                     mSongProgressTV.setText(TimeUtils.parseMMSSString(0));
+                    finish();
 
                     break;
 
@@ -175,6 +200,9 @@ public class NewPlayActivity extends AppCompatActivity {
                     }
 
                     break;
+                case NETWORK_ERROR:
+                    Toast.makeText(NewPlayActivity.this, "网络不好", Toast.LENGTH_LONG).show();
+
 
             }
         }
@@ -183,12 +211,9 @@ public class NewPlayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_many);
+        setContentView(R.layout.activity_new_play);
 
-
-        appContext = (AppContext)getApplication();
-
-
+        currentSong = (Song) getIntent().getSerializableExtra("song_data_from_recordPrepare");
 
         //
         mManyLyricsView = findViewById(R.id.manyLyricsView);
@@ -273,10 +298,9 @@ public class NewPlayActivity extends AppCompatActivity {
 
                     //
                     //mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.aiqingyu);
-                    Song keys=appContext.getSong();
-                    mMediaPlayer=new MediaPlayer();
-                    final AppContext app = (AppContext )getApplication();
-                    String fileUrl="http://58.87.73.51/musicshop/"+app.getDownloadBean().getData().getFilePath();
+                    mMediaPlayer = new MediaPlayer();
+                    // String fileUrl="http://58.87.73.51/musicshop/"+app.getDownloadBean().getData().getFilePath();
+                    String fileUrl = Consts.ENDPOINT + currentSong.getFilePath();
                     mMediaPlayer.reset();
                     try {
                         mMediaPlayer.setDataSource(fileUrl);
@@ -325,7 +349,7 @@ public class NewPlayActivity extends AppCompatActivity {
 
                 mMediaPlayer.start();
                 //play();
-               // mMediaPlayer.start();
+                // mMediaPlayer.start();
                 mHandler.sendEmptyMessage(MUSIC_RESUME);
                 mHandler.postDelayed(mPlayRunnable, 0);
             }
@@ -366,34 +390,58 @@ public class NewPlayActivity extends AppCompatActivity {
 
             @Override
             protected String doInBackground(String... strings) {
-               // InputStream inputStream = getResources().openRawResource(R.raw.aiqingyu_krc);
-                Song keys=appContext.getSong();
-                InputStream inputStream= null;
-                try {
-                    inputStream = new FileInputStream("/mnt/sdcard/MusicShopDownLoad/Songs/"+ keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".krc");
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    LyricsReader lyricsReader = new LyricsReader();
-                    byte[] data = new byte[inputStream.available()];
-                    inputStream.read(data);
-                    lyricsReader.loadLrc(data, null, "/mnt/sdcard/MusicShopDownLoad/Songs/"+ keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".krc");
-                    mManyLyricsView.setLyricsReader(lyricsReader);
-                    //
-                    if (mMediaPlayer != null && mMediaPlayer.isPlaying() && mManyLyricsView.getLrcStatus() == AbstractLrcView.LRCSTATUS_LRC && mManyLyricsView.getLrcPlayerStatus() != AbstractLrcView.LRCPLAYERSTATUS_PLAY) {
-                        mManyLyricsView.play(mMediaPlayer.getCurrentPosition());
+
+                HttpUtil.sendOkHttpRequest(Consts.ENDPOINT + currentSong.getLyric(), new Callback() {
+                    @Override
+                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                        mHandler.sendEmptyMessage(NETWORK_ERROR);
+                        Log.d("NETERROR", "出错了");
                     }
 
-                    inputStream.close();
-                } catch (Exception e) {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                    @Override
+                    public void onResponse(@NonNull Call call, @NonNull Response response) {
+                        if (response.code() == 200) {
+                            Log.d("NETERROR", "没出错");
+                            try {
+                                InputStream inputStream = null;
+                                inputStream = response.body().byteStream();
+                                try {
+                                    inputStream.reset();
+                                } catch (Exception e) {
+                                    Log.d("流错误", "onResponse: "+e.toString());
+                                }
+                                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                                byte[] bytes = new byte[512];
+                                int len = -1;
+                                while ((len = inputStream.read(bytes)) != -1) {
+                                    bos.write(bytes, 0, len);
+                                }
+                                bos.flush();
+                                //把 bytearrayinputstream 转换成inputstream
+                                InputStream decodeIs = new ByteArrayInputStream(bos.toByteArray());
+                                inputStream=decodeIs;
+                                LyricsReader lyricsReader = new LyricsReader();
+                                byte[] data = new byte[inputStream.available()];
+                                inputStream.read(data);
+                                lyricsReader.loadLrc(data, null, "/mnt/sdcard/MusicShopDownLoad/Songs/" + currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".krc");
+                                mManyLyricsView.setLyricsReader(lyricsReader);
+                                //
+                                if (mMediaPlayer != null && mMediaPlayer.isPlaying() && mManyLyricsView.getLrcStatus() == AbstractLrcView.LRCSTATUS_LRC && mManyLyricsView.getLrcPlayerStatus() != AbstractLrcView.LRCPLAYERSTATUS_PLAY) {
+                                    mManyLyricsView.play(mMediaPlayer.getCurrentPosition());
+                                }
 
-                    mManyLyricsView.setLrcStatus(AbstractLrcView.LRCSTATUS_ERROR);
-                    //Log.e(TAG, e.toString());
-                    e.printStackTrace();
-                }
-                inputStream = null;
-
+                                inputStream.close();
+                            } catch (Exception e) {
+                                mManyLyricsView.setLrcStatus(AbstractLrcView.LRCSTATUS_ERROR);
+                                //Log.e(TAG, e.toString());
+                                e.printStackTrace();
+                            }
+                        } else {
+                            mHandler.sendEmptyMessage(NETWORK_ERROR);
+                        }
+                    }
+                });
                 return null;
             }
         }.execute("");
@@ -420,7 +468,18 @@ public class NewPlayActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    public void play(){
+    @Override
+    protected void onDestroy() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
+        super.onDestroy();
+    }
+
+
+    public void play() {
         try {
             mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
@@ -433,6 +492,14 @@ public class NewPlayActivity extends AppCompatActivity {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    public static void actionStart(Context context, Song song) {
+        Intent intent = new Intent(context, NewPlayActivity.class);
+        // 在Intent中传递数据
+        intent.putExtra("song_data_from_recordPrepare", song);
+        // 启动Intent
+        context.startActivity(intent);
     }
 
 }

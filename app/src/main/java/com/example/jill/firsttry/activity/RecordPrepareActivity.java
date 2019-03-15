@@ -1,6 +1,7 @@
 package com.example.jill.firsttry.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -29,9 +30,9 @@ public class RecordPrepareActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.acticity_prepare_record);
         initComponent(); //绑定所有的组件
-        currentSong = testWithFakeData(); // 测试的时候装一点假数据，后来删掉就改行+testWithFakeData函数+取消下一行的注释
+        //currentSong = testWithFakeData(); // 测试的时候装一点假数据，后来删掉就改行+testWithFakeData函数+取消下一行的注释
         //从searchctivity获取用户选择的歌曲
-        // currentSong = (Song) getIntent().getSerializableExtra("song_data_from_search");
+         currentSong = (Song) getIntent().getSerializableExtra("song_data_from_search");
         //设置界面信息
         singer.setText(currentSong.getSingerName());
         songName.setText(currentSong.getSname());
@@ -40,11 +41,7 @@ public class RecordPrepareActivity extends Activity {
         listenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                Intent intent = new Intent(RecordPrepareActivity.this, NewPlayActivity.class);
-                // 在Intent中传递数据
-                intent.putExtra("song_data_from_recordPrepare", currentSong);
-                // 启动Intent
-                startActivity(intent);
+               NewPlayActivity.actionStart(RecordPrepareActivity.this,currentSong);
             }
         });
         recordButton.setOnClickListener(new View.OnClickListener(){
@@ -86,5 +83,15 @@ public class RecordPrepareActivity extends Activity {
         song.setInstrumental("static/instru/原谅（Cover张玉华）刘瑞琦.mp3");
         song.setLyric("static/lyric/原谅（Cover张玉华）刘瑞琦.krc");
         return song;
+    }
+
+    /**
+     * 进入该界面需要传入Song对象
+     * @param context 代表别的界面的上下文context
+     */
+    public static void actionStart(Context context,Song song){
+        Intent intent=new Intent(context,RecordPrepareActivity.class);
+        intent.putExtra("song_data_from_search",song);
+        context.startActivity(intent);
     }
 }

@@ -130,7 +130,6 @@ public class SearchActivity extends BaseTitleActivity {
 
     }
 
-
     private void performSearch(String data) {
         Log.d(TAG, "performSearch: "+data);
         //发布搜索Key
@@ -145,7 +144,5 @@ public class SearchActivity extends BaseTitleActivity {
     private void changeNormalView() {
         ll_search_result_container.setVisibility(View.GONE);
     }
-
-
 
 }

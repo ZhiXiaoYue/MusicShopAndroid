@@ -107,6 +107,7 @@ public abstract class BaseFragment extends Fragment {
         startActivity(intent);
     }
 
+
     public BaseActivity getMainActivity() {
         return (BaseActivity) getActivity();
     }
