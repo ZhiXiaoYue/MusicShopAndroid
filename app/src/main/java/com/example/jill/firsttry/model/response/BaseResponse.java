@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class BaseResponse {
 
-    public String statusCode;
+    public int statusCode;
     public String statusExpression;
     public String data;
 
@@ -22,11 +22,11 @@ public class BaseResponse {
         this.data = data;
     }
 
-    public String getStatusCode() {
+    public int getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(String statusCode) {
+    public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
     }
 

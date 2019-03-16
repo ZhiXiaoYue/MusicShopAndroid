@@ -39,13 +39,13 @@ public class HttpUtil {
         //OkHttpClient client = new OkHttpClient();
         Request request;
         if(userBean==null){
-            Log.d(TAG,"user是null");
+            Log.d("httputil","user是null");
             request= new Request.Builder()
                     .url(address)
                     .addHeader(headerName,"")
                     .build();
         }else {
-            Log.d(TAG,"user的token是"+userBean.getData());
+            Log.d("httputil","user的token是"+userBean.getData());
             request = new Request.Builder()
                     .url(address)
                     .addHeader(headerName,userBean.getData())
