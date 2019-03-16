@@ -390,6 +390,7 @@ public class NewPlayActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 mHandler.sendEmptyMessage(NETWORK_ERROR);
                 Log.d("NETERROR", "出错了");
+                mManyLyricsView.setLrcStatus(AbstractLrcView.LRCSTATUS_ERROR);
             }
 
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -414,6 +415,7 @@ public class NewPlayActivity extends AppCompatActivity {
                     }
                 } else {
                     //Log.d("NETERROR", "有response但出错" + Consts.ENDPOINT + currentSong.getLyric());
+                    mManyLyricsView.setLrcStatus(AbstractLrcView.LRCSTATUS_ERROR);
                 }
             }
         });
