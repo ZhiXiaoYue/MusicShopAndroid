@@ -21,7 +21,6 @@ import com.example.jill.firsttry.Adapter.SongAdapter;
 import com.example.jill.firsttry.R;
 import com.example.jill.firsttry.Utils.Consts;
 import com.example.jill.firsttry.Utils.HttpUtil;
-import com.example.jill.firsttry.activity.LoginAcitivity;
 import com.example.jill.firsttry.activity.RecordPrepareActivity;
 import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.global_val.AppContext;

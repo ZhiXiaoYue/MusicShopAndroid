@@ -22,11 +22,13 @@ import android.widget.Toast;
 
 import com.example.jill.firsttry.Fragments.SearchSongResultFragment;
 import com.example.jill.firsttry.R;
+import com.example.jill.firsttry.Utils.Consts;
 import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.global_val.AppContext;
 import com.example.jill.firsttry.model.global_val.UserBean;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -72,34 +74,39 @@ public class LoginAcitivity extends BaseActivity {
                  * 给出用户提示注册成功与否，以及判断是否用户名已经存在
                  */
                 Log.i("MSG", A);
-                if(A.equals("Success")){
-                    userBean.setName(phoneText.getText().toString().trim());
-                    userBean.setPhone(phoneText.getText().toString().trim());
-                    app.setState(A);//将返回值存入后台bean中
-                    app.setUser(userBean);
-                    Toast.makeText(LoginAcitivity.this, "登录成功", Toast.LENGTH_LONG).show();
-                    //判断是否是从其他界面跳转来的
-                    if(SearchSongResultFragment.SEARCH_BEFORE_LOGIN){
-                        finish();
-                    }else {
+                switch (A) {
+                    case "Success":
+                        userBean.setName(phoneText.getText().toString().trim());
+                        userBean.setPhone(phoneText.getText().toString().trim());
+
+                        app.setState(A);//将返回值存入后台bean中
+                        app.setUser(userBean);
+                        File filedir = new File(Consts.DIR+ userBean.getPhone()+"/");
+                        filedir.mkdir();
+                        Toast.makeText(LoginAcitivity.this, "登录成功", Toast.LENGTH_LONG).show();
+                        //判断是否是从其他界面跳转来的
+                        if (SearchSongResultFragment.SEARCH_BEFORE_LOGIN) {
+                            finish();
+                        } else {
+                            Intent intent = new Intent(LoginAcitivity.this,
+                                    MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                        break;
+                    case "Need to Verify":
+                        userBean.setName(phoneText.getText().toString().trim());
+                        userBean.setPhone(phoneText.getText().toString().trim());
+                        app.setUser(userBean);
+                        Toast.makeText(LoginAcitivity.this, "验证码已发送，请输入", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(LoginAcitivity.this,
-                                MainActivity.class);
+                                VerifyActivity.class);
                         startActivity(intent);
                         finish();
-                    }
-                }
-                else if(A.equals("Need to Verify")){
-                    userBean.setName(phoneText.getText().toString().trim());
-                    userBean.setPhone(phoneText.getText().toString().trim());
-                    app.setUser(userBean);
-                    Toast.makeText(LoginAcitivity.this, "验证码已发送，请输入", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(LoginAcitivity.this,
-                                VerifyActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-                else{
-                    Toast.makeText(LoginAcitivity.this, "验证码发送失败，请检查手机号", Toast.LENGTH_LONG).show();
+                        break;
+                    default:
+                        Toast.makeText(LoginAcitivity.this, "验证码发送失败，请检查手机号", Toast.LENGTH_LONG).show();
+                        break;
                 }
             }
         }

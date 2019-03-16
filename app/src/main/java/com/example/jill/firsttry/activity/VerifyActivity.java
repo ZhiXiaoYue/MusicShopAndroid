@@ -20,10 +20,12 @@ import android.widget.Toast;
 
 import com.example.jill.firsttry.Fragments.SearchSongResultFragment;
 import com.example.jill.firsttry.R;
+import com.example.jill.firsttry.Utils.Consts;
 import com.example.jill.firsttry.model.global_val.AppContext;
 import com.example.jill.firsttry.model.global_val.UserBean;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import okhttp3.OkHttpClient;
@@ -34,7 +36,6 @@ import okhttp3.Response;
 @SuppressLint("Registered")
 public class VerifyActivity  extends BaseCommonActivity {
     private EditText verifyCode;
-
     final OkHttpClient client = new OkHttpClient();
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
@@ -59,7 +60,8 @@ public class VerifyActivity  extends BaseCommonActivity {
                     app.setUser(userBean);
                     app.setState(A);
                     Toast.makeText(VerifyActivity.this, "登录成功", Toast.LENGTH_LONG).show();
-
+                    File filedir = new File(Consts.DIR+ userBean.getPhone()+"/");
+                    filedir.mkdir();
                     //判断是否是从其他界面跳转到登录界面，如果是则登录后要去其他界面
                     if(SearchSongResultFragment.SEARCH_BEFORE_LOGIN){
                         finish();
