@@ -16,7 +16,7 @@ public class Consts {
     public static final String TOKEN="token";
     public static final String SEARCH_TYPE_FOR_SNAME="0";
     public static final String SEARCH_TYPE_FOR_SINGER="1";
-    public static final String DIR= Environment.getExternalStorageDirectory().getPath()+"/MusicShop/";
+    public static final String DIR= "/mnt/sdcard/MusicShopDownLoad/";
 
     public static final String SAVE_SONG_DIR=DIR+"MySong/";
     public static final String COMPANGY_DIR=DIR+"Company/";
@@ -26,6 +26,9 @@ public class Consts {
     public static final String Cache_DIR=DIR+"Cache/";
 
     public static final int RESPONSE_OK=200;
+
+    public static final int COMPANY=1;
+    public static final int LYRIC=0;
 
     public static final long TIME_OUT = 5;
     public static final String ID = "ID";

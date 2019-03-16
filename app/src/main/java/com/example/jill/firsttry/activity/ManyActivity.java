@@ -33,12 +33,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 多行歌词
+ * 录音界面
  */
 public class ManyActivity extends AppCompatActivity {
-
-    private AppContext appContext;
-
+    
+    private Song currentSong;
 
     /**
      * 多行歌词视图
@@ -199,11 +198,7 @@ public class ManyActivity extends AppCompatActivity {
         //设置状态栏可见；
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
         setContentView(R.layout.activity_many);
-
-
-        appContext = (AppContext) getApplication();
-
-
+        currentSong = (Song) getIntent().getSerializableExtra("song_data_from_recordPrepare");
         //
         mManyLyricsView = findViewById(R.id.manyLyricsView);
         //默认颜色
@@ -287,9 +282,8 @@ public class ManyActivity extends AppCompatActivity {
 
                     //
                     //mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.aiqingyu);
-                    Song keys = appContext.getSong();
                     mMediaPlayer = new MediaPlayer();
-                    String fileUrl = "/mnt/sdcard/MusicShopDownLoad/Songs/"+keys.getSname()+ "-" + keys.getSingerName() + "-" +keys.getAlbum()+"-"+keys.getSid()+".mp3";
+                    String fileUrl = "/mnt/sdcard/MusicShopDownLoad/Songs/"+currentSong.getSname()+ "-" + currentSong.getSingerName() + "-" +currentSong.getAlbum()+"-"+currentSong.getSid()+".mp3";
                     mMediaPlayer.reset();
                     try {
                         mMediaPlayer.setDataSource(fileUrl);
@@ -309,7 +303,7 @@ public class ManyActivity extends AppCompatActivity {
                     });
 
                     //初始化录音
-                    String fileName = keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".mp3";
+                    String fileName = currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3";
                     initRecorder("/mnt/sdcard/MusicShopDownLoad/MySongs//", fileName);
 
                     //快进事件
@@ -383,22 +377,17 @@ public class ManyActivity extends AppCompatActivity {
 
             @Override
             protected String doInBackground(String... strings) {
-                // InputStream inputStream = getResources().openRawResource(R.raw.aiqingyu_krc);
-                Song keys = appContext.getSong();
                 InputStream inputStream = null;
                 try {
-                    inputStream = new FileInputStream("/mnt/sdcard/MusicShopDownLoad/Songs/" + keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".krc");
+                    inputStream = new FileInputStream("/mnt/sdcard/MusicShopDownLoad/Song/" + currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".krc");
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
                 try {
-                    //延迟看一下加载效果
-                    Thread.sleep(500);
-
                     LyricsReader lyricsReader = new LyricsReader();
                     byte[] data = new byte[inputStream.available()];
                     inputStream.read(data);
-                    lyricsReader.loadLrc(data, null, "/mnt/sdcard/MusicShopDownLoad/Songs/" + keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".krc");
+                    lyricsReader.loadLrc(data, null, "/mnt/sdcard/MusicShopDownLoad/Song/" + currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".krc");
                     mManyLyricsView.setLyricsReader(lyricsReader);
                     //
                     if (mMediaPlayer != null && mMediaPlayer.isPlaying() && mManyLyricsView.getLrcStatus() == AbstractLrcView.LRCSTATUS_LRC && mManyLyricsView.getLrcPlayerStatus() != AbstractLrcView.LRCPLAYERSTATUS_PLAY) {
@@ -437,6 +426,7 @@ public class ManyActivity extends AppCompatActivity {
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
+        recordStop();
         super.onBackPressed();
     }
 
@@ -517,22 +507,33 @@ public class ManyActivity extends AppCompatActivity {
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
-                //确定
+                finish();
             }
         })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        Song keys = appContext.getSong();
-                        File file=new File("/mnt/sdcard/MusicShopDownLoad/MySongs/"+keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".mp3");
+                        File file=new File("/mnt/sdcard/MusicShopDownLoad/MySongs/"+currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3");
                         file.delete();
+                        finish();
                     }
                 }).show();
     }
 
+    @Override
+    protected void onDestroy() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
+        recordStop();
+        super.onDestroy();
+    }
+
     public static void actionStart(Context context,Song song){
         Intent intent=new Intent(context,ManyActivity.class);
-        intent.putExtra("song",song);
+        intent.putExtra("song_data_from_recordPrepare",song);
         context.startActivity(intent);
     }
 

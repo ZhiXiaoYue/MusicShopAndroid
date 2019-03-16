@@ -118,14 +118,19 @@ public class SearchSongResultFragment extends BaseCommonFragment {
 //            }
 //        });
 
-       // call_1(content);
-        Song song=testWithFakeData();
-        List<Song> songs=new ArrayList<Song>();
-        songs.add(song);
-        adapter.setData(songs);
+        call_1(content);
+//        Song song=testWithFakeData();
+//        List<Song> songs=new ArrayList<Song>();
+//        songs.add(song);
+//        adapter.setData(songs);
     }
 
     private void call_1(String songname) {
+        if(((AppContext)getActivity().getApplication()).getUser()==null){
+            Log.d("现在的token","token是null");
+        }else {
+            Log.d("现在的token",((AppContext)getActivity().getApplication()).getUser().getData());
+        }
         HttpUtil.sendOkHttpRequestWithHeader(Consts.ENDPOINT+"api/search?keyword"+songname+"&type="+Consts.SEARCH_SONG, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
