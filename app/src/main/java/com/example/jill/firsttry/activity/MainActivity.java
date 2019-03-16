@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.icu.text.AlphabeticIndex;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -41,8 +40,8 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-    private Song[] songs =  {testWithFakeData(), testWithFakeData(),testWithFakeData(),testWithFakeData()};//假数据
     private List<Song> songList = new ArrayList<>();
+    private Song[] songs = {};
     ImageButton menu;
 
     public MainActivity() {
@@ -57,12 +56,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
         setContentView(R.layout.activity_main);
         initWindow();
-
+        ImageView recommandImage = findViewById(R.id.recommandToYou);
+        ImageView userRecordImage = findViewById(R.id.user_record_in_main);
         final AppContext app = (AppContext)getApplication();
-         UserBean user= app.getUser();
+        UserBean user= app.getUser();
         TextView u_name = findViewById(R.id.act_m_user_name);
-        if(user != null) u_name.setText(user.getName());
-        else {
+        if(app.getState() != null) { //如果用户已经登陆
+            recommandImage.setVisibility(View.INVISIBLE);
+            u_name.setText(user.getName());
+        }
+        else {  //如果用户没有登录
+            songs = new Song[]{testWithFakeData(),testWithFakeData(),testWithFakeData(),
+                    testWithFakeData(),testWithFakeData(),testWithFakeData(),testWithFakeData()};
+            userRecordImage.setVisibility(View.INVISIBLE); //显示推荐图片
             u_name.setText("请先登录");
             u_name.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
