@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 试听我的歌曲
+ * 试听我的歌曲（
  */
 public class ListenActivity extends AppCompatActivity {
 
@@ -351,8 +351,6 @@ public class ListenActivity extends AppCompatActivity {
 
                 mMediaPlayer.start();
                 mMediaPlayerSound.start();
-                //play();
-                // mMediaPlayer.start();
                 mHandler.sendEmptyMessage(MUSIC_RESUME);
                 mHandler.postDelayed(mPlayRunnable, 0);
             }

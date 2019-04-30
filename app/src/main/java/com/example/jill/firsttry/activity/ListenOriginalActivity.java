@@ -1,46 +1,41 @@
 package com.example.jill.firsttry.activity;
 
-        import android.app.AlertDialog;
-        import android.content.Context;
-        import android.content.DialogInterface;
-        import android.content.Intent;
-        import android.media.AudioManager;
-        import android.media.MediaPlayer;
-        import android.media.MediaRecorder;
-        import android.os.AsyncTask;
-        import android.os.Bundle;
-        import android.os.Handler;
-        import android.os.Message;
-        import android.support.v7.app.AppCompatActivity;
-        import android.view.View;
-        import android.widget.Button;
-        import android.widget.TextView;
+import android.content.Context;
+import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
-        import com.example.jill.firsttry.R;
-        import com.example.jill.firsttry.Utils.Consts;
-        import com.example.jill.firsttry.forLyrics.LyricsReader;
-        import com.example.jill.firsttry.forLyrics.utils.ColorUtils;
-        import com.example.jill.firsttry.forLyrics.utils.TimeUtils;
-        import com.example.jill.firsttry.forLyrics.widget.AbstractLrcView;
-        import com.example.jill.firsttry.forLyrics.widget.ManyLyricsView;
-        import com.example.jill.firsttry.model.Song;
-        import com.example.jill.firsttry.model.global_val.AppContext;
-        import com.zml.libs.widget.MusicSeekBar;
+import com.example.jill.firsttry.R;
+import com.example.jill.firsttry.Utils.Consts;
+import com.example.jill.firsttry.forLyrics.LyricsReader;
+import com.example.jill.firsttry.forLyrics.utils.ColorUtils;
+import com.example.jill.firsttry.forLyrics.utils.TimeUtils;
+import com.example.jill.firsttry.forLyrics.widget.AbstractLrcView;
+import com.example.jill.firsttry.forLyrics.widget.ManyLyricsView;
+import com.example.jill.firsttry.model.Song;
+import com.example.jill.firsttry.model.UserRecord;
+import com.zml.libs.widget.MusicSeekBar;
 
-        import java.io.File;
-        import java.io.FileInputStream;
-        import java.io.FileNotFoundException;
-        import java.io.IOException;
-        import java.io.InputStream;
-        import java.text.SimpleDateFormat;
-        import java.util.Date;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import okhttp3.OkHttpClient;
+
 
 /**
- * 录音界面
+ * 试听界面
  */
-public class ManyActivity extends AppCompatActivity {
-
-    private Song currentSong;
+public class ListenOriginalActivity extends AppCompatActivity {
 
     /**
      * 多行歌词视图
@@ -63,10 +58,10 @@ public class ManyActivity extends AppCompatActivity {
      * 播放按钮
      */
     private Button mPlayBtn;
-//    /**
-//     * 暂停按钮
-//     */
-//    private Button mPauseBtn;
+    /**
+     * 暂停按钮
+     */
+    private Button mPauseBtn;
     /**
      * 停止按钮
      */
@@ -76,9 +71,10 @@ public class ManyActivity extends AppCompatActivity {
     /**
      * 播放器
      */
+    //播放伴奏
     private MediaPlayer mMediaPlayer;
-
-    private MediaRecorder mMediaRecorder;
+    //播放人声
+    private MediaPlayer mMediaPlayerSound;
 
     /**
      * 更新进度
@@ -117,7 +113,17 @@ public class ManyActivity extends AppCompatActivity {
      */
     private final int MUSIC_RESUME = 7;
 
+    public static final int GET_DATA_SUCCESS = 8;
+    public static final int NETWORK_ERROR = 9;
+    public static final int SERVER_ERROR = 10;
+
+    //从准备界面传回的song
+    private Song currentSong;
+    private UserRecord currentRecord;
+
     //private final String TAG = FloatActivity.class.getName();
+
+    final OkHttpClient client = new OkHttpClient();
 
     private Handler mHandler = new Handler() {
         @Override
@@ -167,20 +173,15 @@ public class ManyActivity extends AppCompatActivity {
                 case MUSIC_STOP:
 
                     mManyLyricsView.initLrcData();
-                    recordStop();
                     //
-                    //mMusicSeekBar.setProgress(0);
-                    //mMusicSeekBar.setMax(0);
+                    mMusicSeekBar.setProgress(0);
+                    mMusicSeekBar.setMax(0);
                     mMusicSeekBar.setEnabled(false);
                     //
-                    // mSongDurationTV.setText(TimeUtils.parseMMSSString(0));
-                    //mSongProgressTV.setText(TimeUtils.parseMMSSString(0));
-                    ManyActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showUploadDialog();
-                        }
-                    });
+                    mSongDurationTV.setText(TimeUtils.parseMMSSString(0));
+                    mSongProgressTV.setText(TimeUtils.parseMMSSString(0));
+                    finish();
+
                     break;
 
                 case MUSIC_RESUME:
@@ -190,6 +191,9 @@ public class ManyActivity extends AppCompatActivity {
                     }
 
                     break;
+                case NETWORK_ERROR:
+                    Toast.makeText(ListenOriginalActivity.this, "网络不好", Toast.LENGTH_LONG).show();
+
 
             }
         }
@@ -198,10 +202,11 @@ public class ManyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //设置状态栏可见；
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-        setContentView(R.layout.activity_many);
-        currentSong = (Song) getIntent().getSerializableExtra("song_data_from_recordPrepare");
+        setContentView(R.layout.activity_new_play);
+
+        currentSong = (Song) getIntent().getSerializableExtra("song_data");
+        currentRecord=(UserRecord)getIntent().getSerializableExtra("record_data");
+
         //
         mManyLyricsView = findViewById(R.id.manyLyricsView);
         //默认颜色
@@ -283,8 +288,7 @@ public class ManyActivity extends AppCompatActivity {
 
                     mHandler.sendEmptyMessage(MUSIC_INIT);
 
-                    //
-                    //mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.aiqingyu);
+                   //伴奏
                     mMediaPlayer = new MediaPlayer();
                     String fileUrl = Consts.SONG_DIR +currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3";
                     mMediaPlayer.reset();
@@ -293,8 +297,19 @@ public class ManyActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                     mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+                    //歌声
+                    mMediaPlayerSound=new MediaPlayer();
+                    String fileUrlSound= currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+currentRecord.getRecordTime()+ ".mp3";
+                    mMediaPlayerSound.reset();
+                    try {
+                        mMediaPlayerSound.setDataSource(fileUrlSound);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    mMediaPlayerSound.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
                     mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
                         public void onCompletion(MediaPlayer mediaPlayer) {
@@ -304,13 +319,6 @@ public class ManyActivity extends AppCompatActivity {
                             mHandler.sendEmptyMessage(MUSIC_STOP);
                         }
                     });
-
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String time = df.format(new Date());
-
-                    //初始化录音
-                    String fileName = currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+time+ ".mp3";
-                    initRecorder(Consts.SAVE_SONG_DIR, fileName);
 
                     //快进事件
                     mMediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
@@ -324,14 +332,23 @@ public class ManyActivity extends AppCompatActivity {
                     //异步加载歌词文件
                     loadLrcFile();
 
+                    //播放伴奏
                     try {
                         mMediaPlayer.prepare();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
+                    mMediaPlayer.setVolume(0.1f,0.1f);
                     mMediaPlayer.start();
-                    recordStart();
+                    //播放歌曲
+                    try {
+                        mMediaPlayerSound.prepare();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    mMediaPlayerSound.setVolume(1.0f,1.0f);
+                    mMediaPlayerSound.start();
+
                     mHandler.sendEmptyMessage(MUSIC_PLAY);
                     mHandler.postDelayed(mPlayRunnable, 0);
 
@@ -341,21 +358,21 @@ public class ManyActivity extends AppCompatActivity {
                 if (mMediaPlayer.isPlaying()) return;
 
                 mMediaPlayer.start();
-                //play();
-                // mMediaPlayer.start();
+                mMediaPlayerSound.start();
                 mHandler.sendEmptyMessage(MUSIC_RESUME);
                 mHandler.postDelayed(mPlayRunnable, 0);
             }
         });
 
-//        mPauseBtn = findViewById(R.id.pause);
-//        mPauseBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mMediaPlayer.pause();
-//                mHandler.sendEmptyMessage(MUSIC_PAUSE);
-//            }
-//        });
+        mPauseBtn = findViewById(R.id.pause);
+        mPauseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMediaPlayer.pause();
+                mMediaPlayerSound.pause();
+                mHandler.sendEmptyMessage(MUSIC_PAUSE);
+            }
+        });
 
         mStopBtn = findViewById(R.id.stop);
         mStopBtn.setOnClickListener(new View.OnClickListener() {
@@ -364,7 +381,10 @@ public class ManyActivity extends AppCompatActivity {
                 if (mMediaPlayer != null) {
                     mMediaPlayer.stop();
                     mMediaPlayer.release();
+                    mMediaPlayerSound.stop();
+                    mMediaPlayerSound.release();
                     mMediaPlayer = null;
+                    mMediaPlayerSound=null;
                 }
 
                 mHandler.sendEmptyMessage(MUSIC_STOP);
@@ -374,6 +394,9 @@ public class ManyActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * 加载歌词文件
+     */
     /**
      * 加载歌词文件
      */
@@ -429,12 +452,25 @@ public class ManyActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
+            mMediaPlayerSound.stop();
+            mMediaPlayer.release();
+            mMediaPlayerSound.release();
+            mMediaPlayer = null;
+            mMediaPlayerSound=null;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
-        recordStop();
-        super.onBackPressed();
+        super.onDestroy();
     }
+
 
     public void play() {
         try {
@@ -451,96 +487,14 @@ public class ManyActivity extends AppCompatActivity {
         }
     }
 
-    public void initRecorder(String saveDir, String fileName) {
-        //mediaRecorder.reset();
-        mMediaRecorder = new MediaRecorder();
-        // 储存下载文件的目录
-        File filedir = new File(saveDir);
-        filedir.mkdir();
-        String songPathString = saveDir + fileName;
-        File soundFile = new File(songPathString);
-
-        try {
-            mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-            mMediaRecorder.setOutputFile(soundFile.getAbsolutePath());
-            // 设置录音的来源（从哪里录音）
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    public void recordStart() {
-
-        try {
-            mMediaRecorder.prepare();
-
-
-        } catch (IllegalStateException e) {
-            System.out.print(e.getMessage());
-        } catch (IOException e) {
-            System.out.print(e.getMessage());
-        }
-        mMediaRecorder.start();
-    }
-
-    public void recordStop() {
-        if (mMediaRecorder != null) {
-            try {
-                mMediaRecorder.stop();
-            } catch (IllegalStateException e) {
-                // TODO 如果当前java状态和jni里面的状态不一致，
-                //e.printStackTrace();
-                mMediaRecorder = null;
-                mMediaRecorder = new MediaRecorder();
-                mMediaRecorder.stop();
-            }
-            mMediaRecorder.release();
-            mMediaRecorder = null;
-        }
-    }
-
-    public void showUploadDialog(){
-
-        AlertDialog.Builder builder=new AlertDialog.Builder(ManyActivity.this);
-        //对对话框内容进行定义
-        builder.setTitle("上传");
-        builder.setMessage("是否上传并保存此次歌词记录");
-
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                finish();
-            }
-        })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        File file=new File("/mnt/sdcard/MusicShopDownLoad/MySongs/"+currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3");
-                        file.delete();
-                        finish();
-                    }
-                }).show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (mMediaPlayer != null) {
-            mMediaPlayer.stop();
-            mMediaPlayer.release();
-            mMediaPlayer = null;
-        }
-        recordStop();
-        super.onDestroy();
-    }
-
-    public static void actionStart(Context context,Song song){
-        Intent intent=new Intent(context,ManyActivity.class);
-        intent.putExtra("song_data_from_recordPrepare",song);
+    public static void actionStart(Context context, Song song, UserRecord userRecord) {
+        Intent intent = new Intent(context, ListenOriginalActivity.class);
+        // 在Intent中传递数据
+        intent.putExtra("song_data", song);
+        intent.putExtra("record_data", userRecord);
+        // 启动Intent
         context.startActivity(intent);
     }
 
 }
+

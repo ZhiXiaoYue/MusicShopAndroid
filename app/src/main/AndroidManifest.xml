@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.jill.firsttry">
-    <uses-permission android:name="android.permission.INTERNET"/>
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".model.global_val.AppContext"
         android:allowBackup="true"
+        android:fitsSystemWindows="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-
-        android:theme="@style/AppTheme"
-        android:name="com.example.jill.firsttry.model.global_val.AppContext"
-        android:fitsSystemWindows="true">
-        <activity android:name=".activity.WelcomeAtivity"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".activity.WelcomeAtivity"
             android:theme="@style/FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,47 +27,58 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity"
+        <activity
+            android:name=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".activity.SearchActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".activity.GuideAcitivity"
+            android:theme="@style/FullScreen" />
+        <activity
+            android:name=".activity.LoginAcitivity"
+            android:theme="@style/FullScreen" />
+        <activity
+            android:name=".activity.User_infoActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.VerifyActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.DownloadPrepareActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.MyModifyActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.RecordPrepareActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.CompanyListActivity"
+            android:theme="@style/Theme.AppCompat.Light" />
+        <activity
+            android:name=".activity.MysongListActivity"
+            android:theme="@style/Theme.AppCompat.Light" />
+        <activity
+            android:name=".activity.ManyActivity"
             android:theme="@style/AppTheme.NoActionBar">
-    </activity>
 
-        <activity android:name=".activity.SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
-
-        <activity android:name=".activity.GuideAcitivity"
-            android:theme="@style/FullScreen"/>
-        <activity android:name=".activity.LoginAcitivity"
-            android:theme="@style/FullScreen"/>
-        <activity android:name=".activity.User_infoActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activity.VerifyActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activity.DownloadPrepareActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activity.MyModifyActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activity.RecordPrepareActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activity.CompanyListActivity"
-            android:theme="@style/Theme.AppCompat.Light"/>
-        <activity android:name=".activity.MysongListActivity"
-            android:theme="@style/Theme.AppCompat.Light"/>
-        <activity android:name=".activity.ManyActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>>
-        <activity android:name=".activity.NewPlayActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activity.ListenActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+        >
+        <activity
+            android:name=".activity.NewPlayActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.ListenActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.ListenOriginalActivity"></activity>
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

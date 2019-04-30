@@ -1,6 +1,6 @@
 package com.example.jill.firsttry.model;
 
-public class UserRecord {
+public class UserRecord extends Base {
     private int sid;//歌曲id
     private String recordTime;//歌手名
     private String recordUrl;//歌曲名
