@@ -32,6 +32,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 录音界面
@@ -303,8 +305,11 @@ public class ManyActivity extends AppCompatActivity {
                         }
                     });
 
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String time = df.format(new Date());
+
                     //初始化录音
-                    String fileName = currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3";
+                    String fileName = currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+time+ ".mp3";
                     initRecorder(Consts.SAVE_SONG_DIR, fileName);
 
                     //快进事件

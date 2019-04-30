@@ -61,25 +61,6 @@ public class DownloadUtil {
         dialog.show();
     }
 
-    private void showLyrProgressDialog(){
-        //创建进度条对话框对象
-        dialog = new ProgressDialog(activityContext);
-        // 设置进度条的样式
-        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);// 设置样式
-        //对话框 不终止对话框(如果它为true 代表进度条的值是0)
-        dialog.setIndeterminate(false);
-        //失去焦点的时候，不消失对话框
-        dialog.setCancelable(false);
-        // 设置消息
-        dialog.setMessage("正在下载歌词");
-        // 设置标题
-        dialog.setTitle("请稍等");
-        // 进度条总大小
-        dialog.setMax(PROGRESS_MAX);
-        // 显示出来
-        dialog.show();
-    }
-
     /**
      * @param url 下载连接
      * @param saveDir 储存下载文件的SDCard目录
@@ -135,16 +116,17 @@ public class DownloadUtil {
                                 System.out.println("写入中："+progress);
                                 dialog.setProgress(progress);
                                 //判断是否达到最大值
-                                if (dialog.getProgress() >= PROGRESS_MAX) {
-                                    //消失
-                                    dialog.dismiss();
-                                    //线程标识符
-                                    flag=false;
-                                }
+//                                if (dialog.getProgress() >= PROGRESS_MAX) {
+//                                    //消失
+//                                    dialog.dismiss();
+//                                    //线程标识符
+//                                    flag=false;
+//                                }
                             }
                         });
                     }
                     fos.flush();
+                    dialog.dismiss();
                     // 下载完成
                     onDownloadSuccess(type);
                 } catch (Exception e) {

@@ -70,8 +70,8 @@ public class RecordPrepareActivity extends Activity {
         DownloadUtil downloadUtil = new DownloadUtil(RecordPrepareActivity.this,currentSong);
         String lyricName = currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".krc";
         String companyName = currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3";
-        downloadUtil.download(Consts.ENDPOINT + currentSong.getInstrumental(), Consts.SONG_DIR, companyName,Consts.COMPANY);
         downloadUtil.download(Consts.ENDPOINT + currentSong.getLyric(), Consts.SONG_DIR, lyricName,Consts.LYRIC);
+        downloadUtil.download(Consts.ENDPOINT + currentSong.getInstrumental(), Consts.SONG_DIR, companyName,Consts.COMPANY);
     }
 
     /**
