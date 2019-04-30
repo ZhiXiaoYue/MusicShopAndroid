@@ -35,6 +35,7 @@ import com.example.jill.firsttry.R;
 import com.example.jill.firsttry.Utils.Consts;
 import com.example.jill.firsttry.model.QueryRecordBean;
 import com.example.jill.firsttry.model.Song;
+import com.example.jill.firsttry.model.UserRecord;
 import com.example.jill.firsttry.model.global_val.AppContext;
 import com.example.jill.firsttry.model.global_val.UserBean;
 import com.google.gson.Gson;
@@ -42,8 +43,10 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Timer;
@@ -157,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case R.id.wallet:
                         Intent intent2 = new Intent(MainActivity.this,
-                                SetActivity.class);
+                                MyModifyActivity.class);
                         startActivity(intent2);
                         break;
                     case R.id.photo:
@@ -207,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
+        int flag = 0; //判断是推荐还是用户记录
         recommandImage = findViewById(R.id.recommandToYou);
         userRecordImage = findViewById(R.id.user_record_in_main);
         UserBean user= app.getUser();
@@ -216,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     testWithFakeData(),testWithFakeData(),testWithFakeData(),testWithFakeData()}; // 推荐数据
             userRecordImage.setVisibility(View.INVISIBLE); //显示推荐图片
             recommandImage.setVisibility(View.VISIBLE);
+            flag = 0;
             u_name.setText("请先登录");
             u_name.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -226,6 +231,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
         }
         else {  //如果用户登录了
+            flag = 1;
+            songs = new Song[]{testWithFakeData(),testWithFakeData()};
             recommandImage.setVisibility(View.INVISIBLE);
             userRecordImage.setVisibility(View.VISIBLE); //显示记录
             u_name.setText(user.getName());
@@ -246,10 +253,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         GridLayoutManager layoutManager = new GridLayoutManager(this,3);
         recyclerView.setLayoutManager(layoutManager);
         final SongCardAdapter mAdapter = new SongCardAdapter(songList);
+        final int finalFlag = flag;
         mAdapter.setOnItemClickListener(new SongCardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                RecordPrepareActivity.actionStart(MainActivity.this,songList.get(position));
+                if(finalFlag == 0)
+                    RecordPrepareActivity.actionStart(MainActivity.this,songList.get(position));
+                else{
+                    if(hasDownLoad(songList.get(position))) {
+                        // TODO: 播放录音界面，将用户录音和伴奏同时播放。
+                    }
+                    else{
+                        DownloadPrepareActivity.actionStart(MainActivity.this,songList.get(position),testWithFakeData2().getRecordUrl());
+                    }
+                }
             }
         });
         recyclerView.setAdapter(mAdapter);
@@ -269,6 +286,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         song.setLyric("static/lyric/原谅（Cover张玉华）刘瑞琦.krc");
         return song;
     }
+    private UserRecord testWithFakeData2(){
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = df.format(new Date());
+        UserRecord record = new UserRecord();
+        record.setSid(40);
+        record.setRecordTime(time);
+        record.setRecordUrl("static/music/原谅（Cover张玉华）-刘瑞琦.mp3");
+        return record;
+    }
+
 
     public void postRequest(String phone) {
         int Uuid = (int) ((Math.random() * 9 + 1) * 100000);
@@ -366,7 +394,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * 获取用户记录
+     * 判断本地是否存在
      */
+    private boolean hasDownLoad(Song song){
+        return false;
+    }
 
 }
