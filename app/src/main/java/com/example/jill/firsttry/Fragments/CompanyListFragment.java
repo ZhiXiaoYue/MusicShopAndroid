@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.jill.firsttry.Lab.CompanyLab;
 import com.example.jill.firsttry.R;
+import com.example.jill.firsttry.Utils.Consts;
 import com.example.jill.firsttry.activity.ManyActivity;
 import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.global_val.AppContext;
@@ -85,9 +86,7 @@ public class CompanyListFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            appContext.setSong(keys);
-            Intent intent = new Intent(getActivity(), ManyActivity.class);
-            startActivity(intent);
+            ManyActivity.actionStart(getContext(),keys);
         }
 
     }
@@ -114,7 +113,7 @@ public class CompanyListFragment extends Fragment {
             holder.comDeleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    File file=new File("/mnt/sdcard/MusicShopDownLoad/Songs/"+keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".mp3");
+                    File file=new File(Consts.SONG_DIR+keys.getSname() + "-" + keys.getSingerName() + "-" + keys.getAlbum() + "-" + keys.getSid() + ".mp3");
                     file.delete();
                     Log.e(keys.getSname() + "-" + keys.getSingerName() + "-" +keys.getAlbum()+"-"+keys.getSid(),"5");
                     keysList.remove(position);

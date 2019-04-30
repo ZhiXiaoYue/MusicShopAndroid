@@ -18,8 +18,12 @@ import android.widget.TextView;
 
 import com.example.jill.firsttry.Lab.MysongLab;
 import com.example.jill.firsttry.R;
+import com.example.jill.firsttry.Utils.Consts;
 import com.example.jill.firsttry.activity.ListenActivity;
+import com.example.jill.firsttry.activity.ListenOriginalActivity;
+import com.example.jill.firsttry.model.LocalRecord;
 import com.example.jill.firsttry.model.Song;
+import com.example.jill.firsttry.model.UserRecord;
 import com.example.jill.firsttry.model.global_val.AppContext;
 
 import java.io.File;
@@ -34,7 +38,7 @@ public class MysongListFragment extends Fragment {
     private MysongLab mysongLab;
     //每次点击伴奏这个fragment都要进行刷新，isGetData作为刷新标识
     //private boolean isGetData=false;
-    List<Song> keysList;
+    List<LocalRecord> keysList;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -61,7 +65,7 @@ public class MysongListFragment extends Fragment {
     private class MysongCrimeHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        private Song keys;
+        private LocalRecord keys;
 
         private TextView mysongNameTextView;
         private TextView mysongAlbAndArtistsTextView;
@@ -77,26 +81,32 @@ public class MysongListFragment extends Fragment {
         }
 
         @SuppressLint("SetTextI18n")
-        public void bind(Song keys) {
+        public void bind(LocalRecord keys) {
             this.keys=keys;
-            mysongNameTextView.setText(keys.getSname());
+            mysongNameTextView.setText(keys.getSname()+keys.getRecordTime());
             mysongAlbAndArtistsTextView.setText(keys.getSingerName()+"-"+keys.getAlbum());
         }
 
         @Override
         public void onClick(View view) {
-            appContext.setSong(keys);
-            Intent intent = new Intent(getActivity(), ListenActivity.class);
-            startActivity(intent);
+            Song song=new Song();
+            song.setSname(keys.getSname());
+            song.setSingerName(keys.getSingerName());
+            song.setAlbum(keys.getAlbum());
+            song.setSid(keys.getSid());
+            UserRecord userRecord=new UserRecord();
+            userRecord.setSid(keys.getSid());
+            userRecord.setRecordTime(keys.getRecordTime());
+            ListenOriginalActivity.actionStart(getContext(),song,userRecord);
         }
 
     }
 
     private class MysongCrimeAdapter extends RecyclerView.Adapter<MysongListFragment.MysongCrimeHolder> {
 
-        private List<Song> keysList;
+        private List<LocalRecord> keysList;
 
-        MysongCrimeAdapter(List<Song> keysList) {
+        MysongCrimeAdapter(List<LocalRecord> keysList) {
             this.keysList=keysList;
         }
 
@@ -109,12 +119,12 @@ public class MysongListFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull MysongListFragment.MysongCrimeHolder holder, final int position) {
-            final Song keys = keysList.get(position);
+            final LocalRecord keys = keysList.get(position);
             holder.bind(keys);
             holder.mysongDeleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    File file=new File("/mnt/sdcard/MusicShopDownLoad/MySongs/"+keys.getSname() + "-" + keys.getSingerName() + "-" +keys.getAlbum()+"-"+keys.getSid()+".mp3");
+                    File file=new File(Consts.SAVE_SONG_DIR+keys.getSname() + "-" + keys.getSingerName() + "-" +keys.getAlbum()+"-"+keys.getSid()+"-"+keys.getRecordTime()+".mp3");
                     file.delete();
                     Log.e(keys.getSname() + "-" + keys.getSingerName() + "-" +keys.getAlbum()+"-"+keys.getSid(),"5");
                     keysList.remove(position);

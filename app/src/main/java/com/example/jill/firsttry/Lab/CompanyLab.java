@@ -2,6 +2,7 @@ package com.example.jill.firsttry.Lab;
 
 import android.util.Log;
 
+import com.example.jill.firsttry.Utils.Consts;
 import com.example.jill.firsttry.Utils.GetCompanyFromDir;
 import com.example.jill.firsttry.model.Song;
 
@@ -25,7 +26,7 @@ public class CompanyLab {
 
      public CompanyLab() {
         mKeys=new ArrayList<>();
-        mKeys= GetCompanyFromDir.getComp("/mnt/sdcard/MusicShopDownLoad/Songs/");
+        mKeys= GetCompanyFromDir.getComp(Consts.SONG_DIR);
         for (Song keys:mKeys){
             Log.d(TAG, keys.getSname());
         }
