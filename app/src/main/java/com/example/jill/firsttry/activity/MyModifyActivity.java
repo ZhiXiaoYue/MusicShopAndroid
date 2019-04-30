@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.example.jill.firsttry.R;
 
-public class SetActivity extends AppCompatActivity {
+public class MyModifyActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

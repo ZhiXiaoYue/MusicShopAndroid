@@ -40,12 +40,14 @@
         <activity android:name=".activity.GuideAcitivity"
             android:theme="@style/FullScreen"/>
         <activity android:name=".activity.LoginAcitivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/FullScreen"/>
         <activity android:name=".activity.User_infoActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activity.VerifyActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activity.SetActivity"
+        <activity android:name=".activity.DownloadPrepareActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".activity.MyModifyActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activity.RecordPrepareActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
@@ -53,8 +55,8 @@
             android:theme="@style/Theme.AppCompat.Light"/>
         <activity android:name=".activity.MysongListActivity"
             android:theme="@style/Theme.AppCompat.Light"/>
-        <activity android:name=".activity.ManyActivity">
-            android:theme="@style/AppTheme.NoActionBar"
+        <activity android:name=".activity.ManyActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
 
