@@ -9,6 +9,9 @@ import android.view.View;
 import com.example.jill.firsttry.Fragments.CompanyListFragment;
 import com.example.jill.firsttry.R;
 
+/**
+ * 我的伴奏
+ */
 public class CompanyListActivity extends AppCompatActivity {
 
     @Override

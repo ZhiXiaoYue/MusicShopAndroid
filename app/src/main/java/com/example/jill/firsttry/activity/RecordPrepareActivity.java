@@ -53,6 +53,7 @@ public class RecordPrepareActivity extends Activity {
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //如果文件存在就不去下载了
                 if(!(new File(Consts.SONG_DIR+currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3").exists())){
                     download();
                 }else {

@@ -128,9 +128,11 @@ public class DownloadUtil {
                         fos.write(buf, 0, len);
                         sum += len;
                         final int progress = (int) (sum * 1.0f / total * 100);
+
                         // 下载中
                         ((Activity)activityContext).runOnUiThread(new Runnable() {
                             public void run() {
+                                System.out.println("写入中："+progress);
                                 dialog.setProgress(progress);
                                 //判断是否达到最大值
                                 if (dialog.getProgress() >= PROGRESS_MAX) {
@@ -185,159 +187,8 @@ public class DownloadUtil {
         }
     }
 
-
     private void onDownloadFailed()
     {
         Log.d(TAG, "download failed");
-    }
-
-    public void downloadLyric(final String url, final String saveDir, final String fileName) {
-        HttpUtil.sendOkHttpRequest(url, new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                // 下载失败
-                Log.d(TAG, "download failed(请求错误）");
-            }
-
-            @TargetApi(Build.VERSION_CODES.KITKAT)
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                InputStream is = null;
-                byte[] buf = new byte[2048];
-                int len;
-                FileOutputStream fos = null;
-                // 储存下载文件的目录
-                File filedir = new File(saveDir);
-                filedir.mkdir();
-                String songPathString = saveDir + fileName;
-                File file = new File(songPathString);
-                fos = new FileOutputStream(file);
-
-                //显示进度对话框
-                ((Activity)activityContext).runOnUiThread(new Runnable() {
-                    public void run() {
-                        showLyrProgressDialog();
-                    }
-                });
-
-                //String savePath = isExistDir(saveDir);
-                try {
-                    // is = Objects.requireNonNull(response.body()).byteStream();
-                    is = response.body().byteStream();
-                    long total = response.body().contentLength();
-                    long sum = 0;
-                    while ((len = is.read(buf)) != -1) {
-                        fos.write(buf, 0, len);
-                        sum += len;
-                        final int progress = (int) (sum * 1.0f / total * 100);
-                        // 下载中
-                        ((Activity)activityContext).runOnUiThread(new Runnable() {
-                            public void run() {
-                                dialog.setProgress(progress);
-                                //判断是否达到最大值
-                                if (dialog.getProgress() >= PROGRESS_MAX) {
-                                    //消失
-                                    dialog.dismiss();
-                                    //线程标识符
-                                    flag=false;
-                                }
-                            }
-                        });
-                    }
-                    fos.flush();
-                    // 下载完成
-                     //onDownloadSuccess();
-                } catch (Exception e) {
-                    Log.d(TAG, "download failed(下载错误）"+e.getMessage());
-                } finally {
-                    try {
-                        if (is != null)
-                            is.close();
-                    } catch (IOException ignored) {
-                    }
-                    try {
-                        if (fos != null)
-                            fos.close();
-                    } catch (IOException ignored) {
-                    }
-                }
-            }
-        });
-    }
-
-    public void downLoadCommon(final String url, final String saveDir, final String fileName) {
-        HttpUtil.sendOkHttpRequest(url, new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                // 下载失败
-                Log.d(TAG, "download failed(请求错误）");
-            }
-
-            @TargetApi(Build.VERSION_CODES.KITKAT)
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                InputStream is = null;
-                byte[] buf = new byte[2048];
-                int len;
-                FileOutputStream fos = null;
-                // 储存下载文件的目录
-                File filedir = new File(saveDir);
-                filedir.mkdir();
-                String songPathString = saveDir + fileName;
-                File file = new File(songPathString);
-                fos = new FileOutputStream(file);
-
-                //显示进度对话框
-                ((Activity)activityContext).runOnUiThread(new Runnable() {
-                    public void run() {
-                        showLyrProgressDialog();
-                    }
-                });
-
-                //String savePath = isExistDir(saveDir);
-                try {
-                    // is = Objects.requireNonNull(response.body()).byteStream();
-                    is = response.body().byteStream();
-                    long total = response.body().contentLength();
-                    long sum = 0;
-                    while ((len = is.read(buf)) != -1) {
-                        fos.write(buf, 0, len);
-                        sum += len;
-                        final int progress = (int) (sum * 1.0f / total * 100);
-                        // 下载中
-                        ((Activity)activityContext).runOnUiThread(new Runnable() {
-                            public void run() {
-                                dialog.setProgress(progress);
-                                //判断是否达到最大值
-                                if (dialog.getProgress() >= PROGRESS_MAX) {
-                                    //消失
-                                    dialog.dismiss();
-                                    //线程标识符
-                                    flag=false;
-                                }
-                            }
-                        });
-                    }
-                    fos.flush();
-                    // 下载完成
-                    // onDownloadSuccess();
-                } catch (Exception e) {
-                    Log.d(TAG, "download failed(下载错误）"+e.getMessage());
-                } finally {
-                    try {
-                        if (is != null)
-                            is.close();
-                    } catch (IOException ignored) {
-                    }
-                    try {
-                        if (fos != null)
-                            fos.close();
-                    } catch (IOException ignored) {
-                    }
-                }
-            }
-        });
     }
 }

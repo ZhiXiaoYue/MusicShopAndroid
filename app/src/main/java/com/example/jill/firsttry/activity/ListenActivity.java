@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 多行歌词
+ * 试听我的歌曲
  */
 public class ListenActivity extends AppCompatActivity {
 

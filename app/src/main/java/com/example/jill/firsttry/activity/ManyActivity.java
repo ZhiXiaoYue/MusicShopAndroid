@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.jill.firsttry.R;
+import com.example.jill.firsttry.Utils.Consts;
 import com.example.jill.firsttry.forLyrics.LyricsReader;
 import com.example.jill.firsttry.forLyrics.utils.ColorUtils;
 import com.example.jill.firsttry.forLyrics.utils.TimeUtils;
@@ -36,7 +37,7 @@ import java.io.InputStream;
  * 录音界面
  */
 public class ManyActivity extends AppCompatActivity {
-    
+
     private Song currentSong;
 
     /**
@@ -283,7 +284,7 @@ public class ManyActivity extends AppCompatActivity {
                     //
                     //mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.aiqingyu);
                     mMediaPlayer = new MediaPlayer();
-                    String fileUrl = "/mnt/sdcard/MusicShopDownLoad/Songs/"+currentSong.getSname()+ "-" + currentSong.getSingerName() + "-" +currentSong.getAlbum()+"-"+currentSong.getSid()+".mp3";
+                    String fileUrl = Consts.SONG_DIR +currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3";
                     mMediaPlayer.reset();
                     try {
                         mMediaPlayer.setDataSource(fileUrl);
@@ -304,7 +305,7 @@ public class ManyActivity extends AppCompatActivity {
 
                     //初始化录音
                     String fileName = currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3";
-                    initRecorder("/mnt/sdcard/MusicShopDownLoad/MySongs//", fileName);
+                    initRecorder(Consts.SAVE_SONG_DIR, fileName);
 
                     //快进事件
                     mMediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
@@ -379,7 +380,7 @@ public class ManyActivity extends AppCompatActivity {
             protected String doInBackground(String... strings) {
                 InputStream inputStream = null;
                 try {
-                    inputStream = new FileInputStream("/mnt/sdcard/MusicShopDownLoad/Song/" + currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".krc");
+                    inputStream = new FileInputStream( Consts.SONG_DIR+ currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".krc");
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -387,7 +388,7 @@ public class ManyActivity extends AppCompatActivity {
                     LyricsReader lyricsReader = new LyricsReader();
                     byte[] data = new byte[inputStream.available()];
                     inputStream.read(data);
-                    lyricsReader.loadLrc(data, null, "/mnt/sdcard/MusicShopDownLoad/Song/" + currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".krc");
+                    lyricsReader.loadLrc(data, null, Consts.SONG_DIR + currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".krc");
                     mManyLyricsView.setLyricsReader(lyricsReader);
                     //
                     if (mMediaPlayer != null && mMediaPlayer.isPlaying() && mManyLyricsView.getLrcStatus() == AbstractLrcView.LRCSTATUS_LRC && mManyLyricsView.getLrcPlayerStatus() != AbstractLrcView.LRCPLAYERSTATUS_PLAY) {

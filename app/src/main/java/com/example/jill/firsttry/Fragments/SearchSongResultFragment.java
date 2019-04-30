@@ -21,6 +21,7 @@ import com.example.jill.firsttry.Adapter.SongAdapter;
 import com.example.jill.firsttry.R;
 import com.example.jill.firsttry.Utils.Consts;
 import com.example.jill.firsttry.Utils.HttpUtil;
+import com.example.jill.firsttry.activity.LoginAcitivity;
 import com.example.jill.firsttry.activity.RecordPrepareActivity;
 import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.global_val.AppContext;
@@ -50,7 +51,7 @@ public class SearchSongResultFragment extends BaseCommonFragment {
     RecyclerView rv;
     private SongAdapter adapter;
     Gson gson;
-    AppContext appContext;
+    AppContext appContext=new AppContext();
     //代表LoginActivity的请求码
     public static final int SEARCH_FRAMENT = 1;
     public static boolean SEARCH_BEFORE_LOGIN = false;
@@ -85,30 +86,18 @@ public class SearchSongResultFragment extends BaseCommonFragment {
         fetchData(event.getContent());
     }
 
+    /**
+     * 跳转到准备页面
+     */
     private void show(int position) {
         Song data = adapter.getData(position);
+        //在这里要记住选中的歌曲
+        appContext.setSong(data);
         adapter.notifyDataSetChanged();
         RecordPrepareActivity.actionStart((Context) getActivity(), data);
     }
 
     private void fetchData(String content) {
-//        Api.getInstance().searchSong(content).subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new HttpListener<ListResponse<Song>>(getMainActivity()) {
-//                    @Override
-//                    public void onSucceeded(final ListResponse<Song> data) {
-//                        super.onSucceeded(data);
-//                        adapter.setData(DataUtil.fill(data.getData()));
-//                    }
-//                });
-//        HttpUtil.getInstance().searchSong(content, Consts.SEARCH_TYPE_FOR_SNAME, sp.getToken(), new callListenner(getMainActivity()) {
-//            @Override
-//            public void onSucceeded(Call call, BaseResponse baseResponse) throws IOException {
-//                System.out.println("夜夜夜夜");
-//               // List<Song> Songs= new Gson().fromJson(baseResponse.data,(List<Song>).class);
-//            }
-//        });
-
         call_1(content);
 //        Song song=testWithFakeData();
 //        List<Song> songs=new ArrayList<Song>();
