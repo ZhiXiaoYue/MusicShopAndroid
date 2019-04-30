@@ -257,14 +257,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAdapter.setOnItemClickListener(new SongCardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                UserRecord currentRecord= testWithFakeData2();
+                Song currentSong = songList.get(position); //选中的歌曲
                 if(finalFlag == 0)
-                    RecordPrepareActivity.actionStart(MainActivity.this,songList.get(position));
+                    RecordPrepareActivity.actionStart(MainActivity.this,currentSong);
                 else{
-                    if(hasDownLoad(songList.get(position))) {
-                        // TODO: 播放录音界面，将用户录音和伴奏同时播放。
+                    if(hasDownLoad(currentRecord)) {
+                        // TODO: 播放录音界面，将用户录音和伴奏同时播放。歌曲文件：currentSong，录音：record对应的本地文件
                     }
                     else{
-                        DownloadPrepareActivity.actionStart(MainActivity.this,songList.get(position),testWithFakeData2().getRecordUrl());
+                        DownloadPrepareActivity.actionStart(MainActivity.this,songList.get(position),currentRecord.getRecordUrl());
                     }
                 }
             }
@@ -396,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 判断本地是否存在
      */
-    private boolean hasDownLoad(Song song){
+    private boolean hasDownLoad(UserRecord record){
         return false;
     }
 
