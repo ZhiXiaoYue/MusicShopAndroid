@@ -25,6 +25,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.apache.log4j.chainsaw.Main;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -262,11 +264,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(finalFlag == 0)
                     RecordPrepareActivity.actionStart(MainActivity.this,currentSong);
                 else{
-                    if(hasDownLoad(currentRecord)) {
+                    if(hasDownLoad(currentRecord,currentSong)) {
                         // TODO: 播放录音界面，将用户录音和伴奏同时播放。歌曲文件：currentSong，录音：record对应的本地文件
+                        ListenOriginalActivity.actionStart(MainActivity.this,currentSong,currentRecord);
                     }
                     else{
-                        DownloadPrepareActivity.actionStart(MainActivity.this,songList.get(position),currentRecord.getRecordUrl());
+                      //  DownloadPrepareActivity.actionStart(MainActivity.this,songList.get(position),currentRecord);
                     }
                 }
             }
@@ -278,14 +281,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private Song testWithFakeData(){
         Song song = new Song();
-        song.setSname("原谅（Cover张玉华");
-        song.setSingerName("刘瑞琦");
-        song.setSid(40);
-        song.setAlbum("头号粉丝");
-        song.setAlbumPic("static/album_thumbnails/刘瑞琦-头号粉丝.jpg");
-        song.setFilePath("static/music/原谅（Cover张玉华）-刘瑞琦.mp3");
-        song.setInstrumental("static/instru/原谅（Cover张玉华）刘瑞琦.mp3");
-        song.setLyric("static/lyric/原谅（Cover张玉华）刘瑞琦.krc");
+        song.setSname("forgive");
+        song.setSingerName("Liu");
+        song.setSid(19);
+        song.setAlbum("firstfans");
+        song.setAlbumPic("static/album_thumbnails/Liu-firstfans.jpg");
+        song.setFilePath("static/music/forgive-Liu.mp3");
+        song.setInstrumental("static/instru/forgiveLiu.mp3");
+        song.setLyric("static/lyric/forgiveLiu.krc");
         return song;
     }
     private UserRecord testWithFakeData2(){
@@ -293,9 +296,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
         UserRecord record = new UserRecord();
-        record.setSid(40);
+        record.setSid(19);
         record.setRecordTime(time);
-        record.setRecordUrl("static/music/原谅（Cover张玉华）-刘瑞琦.mp3");
+        record.setRecordUrl("static/music/forgive-Liu.mp3");
         return record;
     }
 
@@ -398,8 +401,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 判断本地是否存在
      */
-    private boolean hasDownLoad(UserRecord record){
-        return false;
+    private boolean hasDownLoad(UserRecord record,Song song){
+        return  new File(Consts.SONG_DIR+song.getSname() + "-" + song.getSingerName() + "-" + song.getAlbum() + "-" + song.getSid() +"-"+record.getRecordTime()+ ".mp3").exists();
     }
 
 }

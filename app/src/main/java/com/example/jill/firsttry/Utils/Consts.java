@@ -29,6 +29,7 @@ public class Consts {
 
     public static final int COMPANY=1;
     public static final int LYRIC=0;
+    public static final int ORIGINAL_RECORD=2;
 
     public static final long TIME_OUT = 5;
     public static final String ID = "ID";
