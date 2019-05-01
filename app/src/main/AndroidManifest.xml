@@ -32,7 +32,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTask" />
         <activity
             android:name=".activity.GuideAcitivity"
             android:theme="@style/FullScreen" />
@@ -80,7 +81,6 @@
             android:name=".activity.ListenActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activity.ListenOriginalActivity" />
-        <activity android:name=".activity.AActivity"></activity>
     </application>
 
 </manifest>

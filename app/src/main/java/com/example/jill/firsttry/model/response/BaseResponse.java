@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class BaseResponse {
 
-    public int statusCode;
-    public String statusExpression;
+    private int statusCode;
+    private String statusExpression;
     public String data;
 
     public String getData() {
