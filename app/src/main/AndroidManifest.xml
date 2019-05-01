@@ -29,15 +29,16 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.GuideAcitivity"
             android:theme="@style/FullScreen" />
         <activity
             android:name=".activity.LoginAcitivity"
+            android:launchMode="singleTask"
             android:theme="@style/FullScreen" />
         <activity
             android:name=".activity.User_infoActivity"
@@ -78,7 +79,8 @@
         <activity
             android:name=".activity.ListenActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.ListenOriginalActivity"></activity>
+        <activity android:name=".activity.ListenOriginalActivity" />
+        <activity android:name=".activity.AActivity"></activity>
     </application>
 
 </manifest>
