@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         ListenOriginalActivity.actionStart(MainActivity.this,currentSong,currentRecord);
                     }
                     else{
-                      //  DownloadPrepareActivity.actionStart(MainActivity.this,songList.get(position),currentRecord);
+                        DownloadPrepareActivity.actionStart(MainActivity.this,songList.get(position),currentRecord);
                     }
                 }
             }
