@@ -21,6 +21,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -202,6 +203,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         else Toast.makeText(MainActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
                 }
                 return true;
+            }
+        });
+
+        Button button=findViewById(R.id.button);
+        final TextView textView=findViewById(R.id.textview);
+        final ApiUtil api=new ApiUtil();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Song song=api.getSongById("31",MainActivity.this);
+                textView.setText(song.getSname());
             }
         });
     }

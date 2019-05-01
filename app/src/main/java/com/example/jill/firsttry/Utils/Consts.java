@@ -16,6 +16,7 @@ public class Consts {
     public static final String TOKEN="token";
     public static final String SEARCH_TYPE_FOR_SNAME="0";
     public static final String SEARCH_TYPE_FOR_SINGER="1";
+    public static final String SEARCH_TYPE_FOR_SID="4";
     public static final String DIR= "/mnt/sdcard/MusicShopDownLoad/";
 
     public static final String SAVE_SONG_DIR=DIR+"MySong/";

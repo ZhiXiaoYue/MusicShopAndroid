@@ -39,8 +39,8 @@
             android:theme="@style/FullScreen" />
         <activity
             android:name=".activity.LoginAcitivity"
-            android:theme="@style/FullScreen"
-            />
+            android:launchMode="singleTask"
+            android:theme="@style/FullScreen" />
         <activity
             android:name=".activity.User_infoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -80,7 +80,7 @@
         <activity
             android:name=".activity.ListenActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.ListenOriginalActivity"></activity>
+        <activity android:name=".activity.ListenOriginalActivity" />
     </application>
 
 </manifest>
