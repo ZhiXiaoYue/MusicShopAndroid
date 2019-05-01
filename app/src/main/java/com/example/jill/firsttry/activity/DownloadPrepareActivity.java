@@ -90,7 +90,7 @@ public class DownloadPrepareActivity extends Activity {
      */
     private void downloadRecord() {
         DownloadRecordUtil downloadUtil = new DownloadRecordUtil(DownloadPrepareActivity.this,currentSong,userRecord);
-        String recordName = currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+userRecord.getRecordTime() + ".mp3";
+        String recordName = currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+userRecord.getTime() + ".mp3";
         try {
             downloadUtil.download(Consts.ENDPOINT + currentSong.getInstrumental(), Consts.SAVE_SONG_DIR, recordName,Consts.ORIGINAL_RECORD);
         } catch (IOException e) {

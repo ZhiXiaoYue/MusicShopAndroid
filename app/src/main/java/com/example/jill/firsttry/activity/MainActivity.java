@@ -34,6 +34,7 @@ import org.json.JSONObject;
 import com.example.jill.firsttry.Adapter.SongCardAdapter;
 import com.example.jill.firsttry.Fragments.SearchSongResultFragment;
 import com.example.jill.firsttry.R;
+import com.example.jill.firsttry.Utils.ApiUtil;
 import com.example.jill.firsttry.Utils.Consts;
 import com.example.jill.firsttry.model.QueryRecordBean;
 import com.example.jill.firsttry.model.Song;
@@ -234,6 +235,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else {  //如果用户登录了
             flag = 1;
+            ApiUtil apu = new ApiUtil();
+            UserRecord ur = apu.getURById("33",MainActivity.this);
             songs = new Song[]{testWithFakeData(),testWithFakeData()};
             recommandImage.setVisibility(View.INVISIBLE);
             userRecordImage.setVisibility(View.VISIBLE); //显示记录
@@ -296,9 +299,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = df.format(new Date());
         UserRecord record = new UserRecord();
-        record.setSid(19);
-        record.setRecordTime(time);
-        record.setRecordUrl("static/music/forgive-Liu.mp3");
+        record.setRid(33);
+        record.setTime(time);
+        record.setMusic(testWithFakeData());
         return record;
     }
 
@@ -402,7 +405,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 判断本地是否存在
      */
     private boolean hasDownLoad(UserRecord record,Song song){
-        return  new File(Consts.SONG_DIR+song.getSname() + "-" + song.getSingerName() + "-" + song.getAlbum() + "-" + song.getSid() +"-"+record.getRecordTime()+ ".mp3").exists();
+        return  new File(Consts.SONG_DIR+song.getSname() + "-" + song.getSingerName() + "-" + song.getAlbum() + "-" + song.getSid() +"-"+record.getTime()+ ".mp3").exists();
     }
 
 }

@@ -301,7 +301,7 @@ public class ListenOriginalActivity extends AppCompatActivity {
 
                     //歌声
                     mMediaPlayerSound=new MediaPlayer();
-                    String fileUrlSound= currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+currentRecord.getRecordTime()+ ".mp3";
+                    String fileUrlSound= currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+currentRecord.getTime()+ ".mp3";
                     mMediaPlayerSound.reset();
                     try {
                         mMediaPlayerSound.setDataSource(fileUrlSound);

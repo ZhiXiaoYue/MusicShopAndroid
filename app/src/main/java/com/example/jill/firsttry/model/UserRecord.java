@@ -1,32 +1,51 @@
 package com.example.jill.firsttry.model;
 
 public class UserRecord extends Base {
-    private int sid;//歌曲id
-    private String recordTime;
-    private String recordUrl;
+    private String filepath;//歌曲id
+    private Song music;
+    private int rid;
+    private String score;
+    private String time;
 
-    public int getSid() {
-        return sid;
+    public String getFilepath() {
+        return filepath;
     }
 
-    public void setSid(int sid) {
-        this.sid = sid;
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
     }
 
-    public String getRecordTime() {
-        return recordTime;
+    public Song getMusic() {
+        return music;
     }
 
-    public void setRecordTime(String recordTime) {
-        this.recordTime = recordTime;
+    public void setMusic(Song music) {
+        this.music = music;
     }
 
-    public String getRecordUrl() {
-        return recordUrl;
+    public int getRid() {
+        return rid;
     }
 
-    public void setRecordUrl(String recordUrl) {
-        this.recordUrl = recordUrl;
+    public void setRid(int rid) {
+        this.rid = rid;
     }
 
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
+    }
+
+
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 }

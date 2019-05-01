@@ -29,16 +29,18 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTask" />
         <activity
             android:name=".activity.GuideAcitivity"
             android:theme="@style/FullScreen" />
         <activity
             android:name=".activity.LoginAcitivity"
-            android:theme="@style/FullScreen" />
+            android:theme="@style/FullScreen"
+            />
         <activity
             android:name=".activity.User_infoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
