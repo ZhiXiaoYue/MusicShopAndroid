@@ -31,7 +31,9 @@ import com.example.jill.firstry.event.OnSearchByIdFinishEvent;
 import com.example.jill.firsttry.Adapter.SongCardAdapter;
 import com.example.jill.firsttry.R;
 import com.example.jill.firsttry.Utils.Consts;
+import com.example.jill.firsttry.forLyrics.model.SongList;
 import com.example.jill.firsttry.model.QueryRecordBean;
+import com.example.jill.firsttry.model.Recommandation;
 import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.UserRecord;
 import com.example.jill.firsttry.model.UserRecordSimple;
@@ -223,8 +225,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         UserBean user= app.getUser();
         TextView u_name = findViewById(R.id.act_m_user_name);
         if(app.getState() == null) { //如果用户没有登录
-//            songs = new Song[]{testWithFakeData(),testWithFakeData(),testWithFakeData(),
-//                    testWithFakeData(),testWithFakeData(),testWithFakeData(),testWithFakeData()}; // 推荐数据
+            Recommandation rcd = new Recommandation();
+            songList = rcd.getRecommendation();
             userRecordImage.setVisibility(View.INVISIBLE); //显示推荐图片
             recommandImage.setVisibility(View.VISIBLE);
             flag = 0;
@@ -404,21 +406,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(mAdapter);
     }
 
-    /**
-     * 装一点假的数据，后来删掉就好
-     */
-    private Song testWithFakeData(){
-        Song song = new Song();
-        song.setSname("forgive");
-        song.setSingerName("Liu");
-        song.setSid(19);
-        song.setAlbum("firstfans");
-        song.setAlbumPic("static/album_thumbnails/Liu-firstfans.jpg");
-        song.setFilePath("static/music/forgive-Liu.mp3");
-        song.setInstrumental("static/instru/forgiveLiu.mp3");
-        song.setLyric("static/lyric/forgiveLiu.krc");
-        return song;
-    }
 
 
     public void postRequest(String phone) {
