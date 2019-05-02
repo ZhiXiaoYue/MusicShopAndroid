@@ -21,6 +21,7 @@ import com.example.jill.firsttry.R;
 import com.example.jill.firsttry.Utils.Consts;
 import com.example.jill.firsttry.activity.ListenActivity;
 import com.example.jill.firsttry.activity.ListenOriginalActivity;
+import com.example.jill.firsttry.activity.SubmitPrepareActivity;
 import com.example.jill.firsttry.model.LocalRecord;
 import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.UserRecord;
@@ -97,7 +98,8 @@ public class MysongListFragment extends Fragment {
             UserRecord userRecord=new UserRecord();
             userRecord.setRid(keys.getSid());
             userRecord.setTime(keys.getRecordTime());
-            ListenOriginalActivity.actionStart(getContext(),song,userRecord);
+            SubmitPrepareActivity.actionStart(getContext(),song,userRecord);
+            //ListenOriginalActivity.actionStart(getContext(),song,userRecord);
         }
 
     }

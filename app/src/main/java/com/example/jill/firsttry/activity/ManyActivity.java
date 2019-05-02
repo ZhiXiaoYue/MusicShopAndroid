@@ -1,5 +1,6 @@
 package com.example.jill.firsttry.activity;
 
+        import android.annotation.SuppressLint;
         import android.app.AlertDialog;
         import android.content.Context;
         import android.content.DialogInterface;
@@ -119,6 +120,7 @@ public class ManyActivity extends AppCompatActivity {
 
     //private final String TAG = FloatActivity.class.getName();
 
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -348,15 +350,6 @@ public class ManyActivity extends AppCompatActivity {
             }
         });
 
-//        mPauseBtn = findViewById(R.id.pause);
-//        mPauseBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mMediaPlayer.pause();
-//                mHandler.sendEmptyMessage(MUSIC_PAUSE);
-//            }
-//        });
-
         mStopBtn = findViewById(R.id.stop);
         mStopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -377,6 +370,7 @@ public class ManyActivity extends AppCompatActivity {
     /**
      * 加载歌词文件
      */
+    @SuppressLint("StaticFieldLeak")
     private void loadLrcFile() {
 
         new AsyncTask<String, Integer, String>() {

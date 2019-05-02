@@ -11,6 +11,8 @@ import com.example.jill.firsttry.BuildConfig;
 
 public class Consts {
     public static final String ENDPOINT = BuildConfig.ENDPOINT;
+    //上传用户记录
+    public static final String addRecordURL=ENDPOINT+"api/addrecord";
     //搜索歌曲请求的url
     public static final String SEARCH_SONG=ENDPOINT+"api/search?keyword=****&type=**";
     public static final String TOKEN="token";

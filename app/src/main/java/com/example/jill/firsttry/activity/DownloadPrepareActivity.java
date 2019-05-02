@@ -130,6 +130,7 @@ public class DownloadPrepareActivity extends Activity {
             return rowItems;
         }
 
+        @Override
         protected void onProgressUpdate(Integer... progress) {
             progressDialog.setProgress(progress[0]);
             if (rowItems != null) {
