@@ -76,13 +76,16 @@ public class DownloadPrepareActivity extends Activity {
                         new String[]{Consts.SONG_DIR, Consts.SONG_DIR, Consts.SAVE_SONG_DIR},
                         new String[]{currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".krc",
                                 currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3",
-                                currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + userRecord.getTime() + ".mp3"
+                                currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + userRecord.getTime() + "-" + userRecord.getRid()+".mp3"
                         });
 //                task.execute(new String[]{Consts.ENDPOINT + currentSong.getLyric(),
 //                        Consts.ENDPOINT + currentSong.getInstrumental(),
 //                        Consts.ENDPOINT + userRecord.getRecordUrl(),
 //                });
-                task.execute(new String[]{URL,URL,URL});
+                String URL_lyric = Consts.ENDPOINT+currentSong.getLyric();
+                String URL_accompany = Consts.ENDPOINT+currentSong.getInstrumental();
+                String URL_record = Consts.ENDPOINT+userRecord.getFilepath();
+                task.execute(new String[]{URL_lyric,URL_accompany,URL_record});
                 showProgressDialog();
             }
         });

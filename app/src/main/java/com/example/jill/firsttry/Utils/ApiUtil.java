@@ -145,61 +145,7 @@
 //
 //    public UserRecord getURById(String uRId, final Activity superActivity){
 //        final UserRecord[] userRecord = {new UserRecord()};
-//        @SuppressLint("HandlerLeak") final Handler mHandler = new Handler(){
-//            @Override
-//            public void handleMessage(Message msg){
-//                switch (msg.what){
-//                    case NETWORK_ERROR:
-//                        Toast.makeText(superActivity, "验证码发送失败，请检查网络连接", Toast.LENGTH_LONG).show();
-//                        break;
-//                    case SERVER_ERROR:
-//                        Toast.makeText(superActivity, "服务器发生错误，请联系客服", Toast.LENGTH_LONG).show();
-//                        break;
-//                }
-//                if(msg.what==1){
-//                    String returnMessage = (String) msg.obj;
-//                    BaseResponse br =  new Gson().fromJson(returnMessage, BaseResponse.class);
-//                    String A = br.getStatusExpression();
-//                    if(A.equals("Success")){
-//                        returnMessage = br.getData();
-//                        returnMessage= returnMessage.replaceAll("\\\\\"", "\"");
-//                        UserRecord  ur =  new Gson().fromJson(returnMessage, UserRecord.class);
-//                        userRecord[0] = ur;
 //
-////                        System.out.println("测试成功"+ur.getFilepath());
-//                    }
-//                    else{
-//                        Toast.makeText(superActivity, "服务器发生错误，请联系客服", Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//            }
-//        };
-//        final OkHttpClient client = new OkHttpClient();
-//
-//        String mUrl = String.format("http://58.87.73.51:8080/musicshop/api/findbyrid?rid=%s",uRId);
-//        final Request request = new Request.Builder()
-//                .addHeader("token", getUserToken(superActivity))
-//                .url(mUrl)
-//                .build();
-//        new Thread(new Runnable() {
-//            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-//            @Override
-//            public void run() {
-//                Response response;
-//                try {
-//                    //回调
-//                    response = client.newCall(request).execute();
-//                    if (response.isSuccessful()) {
-//                        //将服务器响应的参数response.body().string())发送到hanlder中，并更新ui
-//                        mHandler.obtainMessage(1, Objects.requireNonNull(response.body()).string()).sendToTarget();
-//                    } else {
-//                        throw new IOException("Unexpected code:" + response);
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
 //        return userRecord[0];
 //    }
 //

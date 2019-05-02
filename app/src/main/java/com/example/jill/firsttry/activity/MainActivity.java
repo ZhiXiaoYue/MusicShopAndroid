@@ -22,42 +22,37 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.log4j.chainsaw.Main;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.example.jill.firstry.event.OnSearchByIdFinishEvent;
 import com.example.jill.firsttry.Adapter.SongCardAdapter;
-import com.example.jill.firsttry.Fragments.SearchSongResultFragment;
 import com.example.jill.firsttry.R;
 import com.example.jill.firsttry.Utils.Consts;
+import com.example.jill.firsttry.forLyrics.model.SongList;
 import com.example.jill.firsttry.model.QueryRecordBean;
+import com.example.jill.firsttry.model.Recommandation;
 import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.UserRecord;
 import com.example.jill.firsttry.model.UserRecordSimple;
 import com.example.jill.firsttry.model.global_val.AppContext;
 import com.example.jill.firsttry.model.global_val.UserBean;
+import com.example.jill.firsttry.model.response.BaseResponse;
 import com.example.jill.firsttry.model.search.AllRecordBean;
 import com.google.gson.Gson;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Timer;
@@ -78,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<Song> songList = new ArrayList<>();
     final OkHttpClient client = new OkHttpClient();
     private AppContext app ;
+    private List<UserRecord> recordList = new ArrayList<>();
+    private int flag;
     ImageView recommandImage;
     ImageView userRecordImage;
     @SuppressLint("HandlerLeak")
@@ -222,14 +219,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        int flag = 0; //判断是推荐还是用户记录
+        flag = 0; //判断是推荐还是用户记录
         recommandImage = findViewById(R.id.recommandToYou);
         userRecordImage = findViewById(R.id.user_record_in_main);
         UserBean user= app.getUser();
         TextView u_name = findViewById(R.id.act_m_user_name);
         if(app.getState() == null) { //如果用户没有登录
-//            songs = new Song[]{testWithFakeData(),testWithFakeData(),testWithFakeData(),
-//                    testWithFakeData(),testWithFakeData(),testWithFakeData(),testWithFakeData()}; // 推荐数据
+            Recommandation rcd = new Recommandation();
+            songList = rcd.getRecommendation();
             userRecordImage.setVisibility(View.INVISIBLE); //显示推荐图片
             recommandImage.setVisibility(View.VISIBLE);
             flag = 0;
@@ -243,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
         }
         else {  //如果用户登录了
+            //获取用户的上传记录
             flag = 1;
             @SuppressLint("HandlerLeak") final Handler mHandler = new Handler(){
             @Override
@@ -263,7 +261,66 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     AllRecordBean arb = new Gson().fromJson(returnMessage, AllRecordBean.class);
 
                     String A = arb.getStatusExpression();
-                    System.out.println("准备测试"+A);
+                    ArrayList<UserRecordSimple> userRecordSimples = arb.getData();
+                    for (UserRecordSimple userRecordSimple : userRecordSimples) {
+                        String rid = String.valueOf(userRecordSimple.getRid());
+                        //根据rid查找用户记录
+                        @SuppressLint("HandlerLeak") final Handler mHandler2 = new Handler(){
+                            @Override
+                            public void handleMessage(Message msg){
+                            switch (msg.what){
+                            case NETWORK_ERROR:
+                                Toast.makeText(MainActivity.this, "验证码发送失败，请检查网络连接", Toast.LENGTH_LONG).show();
+                            break;
+                            case SERVER_ERROR:
+                                Toast.makeText(MainActivity.this, "服务器发生错误，请联系客服", Toast.LENGTH_LONG).show();
+                            break;
+                            }
+                            if(msg.what==1){
+                                String returnMessage = (String) msg.obj;
+                                BaseResponse br =  new Gson().fromJson(returnMessage, BaseResponse.class);
+                                String A = br.getStatusExpression();
+                                if(A.equals("Success")){
+                                    returnMessage = br.getData();
+                                    returnMessage= returnMessage.replaceAll("\\\\\"", "\"");
+                                    UserRecord ur =  new Gson().fromJson(returnMessage, UserRecord.class);
+                                    recordList.add(ur);
+                                    songList.add(ur.getMusic());
+                                    System.out.println("测试"+ur.getMusic().getSingerName());
+                                }
+                            else{
+                                    Toast.makeText(MainActivity.this, "服务器发生错误，请联系客服", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                            }
+                        };
+                        final OkHttpClient client = new OkHttpClient();
+                        String mUrl = String.format("http://58.87.73.51:8080/musicshop/api/findbyrid?rid=%s", rid);
+                        final Request request = new Request.Builder()
+                            .addHeader("token", getUserToken(MainActivity.this))
+                            .url(mUrl)
+                            .build();
+                        new Thread(new Runnable() {
+                            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                            @Override
+                            public void run() {
+                                Response response;
+                                try {
+                                //回调
+                                    response = client.newCall(request).execute();
+                                    if (response.isSuccessful()) {
+                                    //将服务器响应的参数response.body().string())发送到hanlder中，并更新ui
+                                        mHandler2.obtainMessage(1, Objects.requireNonNull(response.body()).string()).sendToTarget();
+                                    } else {
+                                        throw new IOException("Unexpected code:" + response);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
+                    songList.clear();
                     if(!A.equals("Success")){
                         Toast.makeText(MainActivity.this, "服务器发生错误，请联系客服", Toast.LENGTH_LONG).show();
                     }
@@ -271,7 +328,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
         final OkHttpClient client = new OkHttpClient();
-
         String mUrl = "http://58.87.73.51:8080/musicshop/api/queryrecord";
         final Request request = new Request.Builder()
                 .addHeader("token", getUserToken(MainActivity.this))
@@ -296,24 +352,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+
         thread.start();
-//            ApiUtil apu = new ApiUtil();
-//            try {
-//                AllRecordBean arb = apu.getAllRecord(MainActivity.this);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            songList.clear();
-//            ArrayList<UserRecordSimple> userRecordSimples = arb.getData();
-//            for (UserRecordSimple userRecordSimple : userRecordSimples) {
-//                String rid = String.valueOf(userRecordSimple.getRid());
-//                UserRecord ur = apu.getURById(rid, MainActivity.this);
-//                songList.add(ur.getMusic());
-//            }
-            recommandImage.setVisibility(View.INVISIBLE);
-            userRecordImage.setVisibility(View.VISIBLE); //显示记录
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        recommandImage.setVisibility(View.INVISIBLE);
+        userRecordImage.setVisibility(View.VISIBLE); //显示记录
             u_name.setText(user.getName());
         }
+
         ImageButton buttonS = findViewById(R.id.button_search);
         buttonS.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -322,50 +372,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         /* 3.15
          * 填入歌曲
          */
-
-        RecyclerView recyclerView = findViewById(R.id.recycler_view_in_main);
         GridLayoutManager layoutManager = new GridLayoutManager(this,3);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view_in_main);
         recyclerView.setLayoutManager(layoutManager);
         final SongCardAdapter mAdapter = new SongCardAdapter(songList);
-        final int finalFlag = flag;
         mAdapter.setOnItemClickListener(new SongCardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-//
-//                Song currentSong = songList.get(position); //选中的歌曲
-//                if(finalFlag == 0)
-//                    RecordPrepareActivity.actionStart(MainActivity.this,currentSong);
-//                else{
-//                    if(hasDownLoad(currentRecord,currentSong)) {
-//                        // TODO: 播放录音界面，将用户录音和伴奏同时播放。歌曲文件：currentSong，录音：record对应的本地文件
-//                        ListenOriginalActivity.actionStart(MainActivity.this,currentSong,currentRecord);
-//                    }
-//                    else{
-//                        DownloadPrepareActivity.actionStart(MainActivity.this,songList.get(position),currentRecord);
-//                    }
-//                }
+                Song currentSong = songList.get(position); //选中的歌曲
+                if(flag == 1) {
+                    UserRecord currentRecord = recordList.get(position);
+                    if (hasDownLoad(currentRecord, currentSong)) {
+                        ListenOriginalActivity.actionStart(MainActivity.this, currentSong, currentRecord);
+                    } else {
+                        DownloadPrepareActivity.actionStart(MainActivity.this, currentSong, currentRecord);
+                    }
+                }
+                else{
+                    // 推荐给用户之后的跳转界面
+                    RecordPrepareActivity.actionStart(MainActivity.this,currentSong);
+                }
             }
         });
         recyclerView.setAdapter(mAdapter);
     }
-    /**
-     * 装一点假的数据，后来删掉就好
-     */
-    private Song testWithFakeData(){
-        Song song = new Song();
-        song.setSname("forgive");
-        song.setSingerName("Liu");
-        song.setSid(19);
-        song.setAlbum("firstfans");
-        song.setAlbumPic("static/album_thumbnails/Liu-firstfans.jpg");
-        song.setFilePath("static/music/forgive-Liu.mp3");
-        song.setInstrumental("static/instru/forgiveLiu.mp3");
-        song.setLyric("static/lyric/forgiveLiu.krc");
-        return song;
-    }
+
 
 
     public void postRequest(String phone) {
@@ -463,7 +503,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 判断本地是否存在
      */
     private boolean hasDownLoad(UserRecord record,Song song){
-        return  new File(Consts.SONG_DIR+song.getSname() + "-" + song.getSingerName() + "-" + song.getAlbum() + "-" + song.getSid() +"-"+record.getTime()+ ".mp3").exists();
+        return new File(Consts.SONG_DIR+song.getSname() + "-" + song.getSingerName() + "-" + song.getAlbum() + "-" + song.getSid() +"-"+record.getTime()+"-"+record.getRid()+".mp3").exists();
     }
     private String getUserToken(Activity activity){
         AppContext app = (AppContext)activity.getApplication();
