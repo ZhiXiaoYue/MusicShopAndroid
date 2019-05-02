@@ -16,6 +16,7 @@ import com.example.jill.firsttry.activity.LoginAcitivity;
 import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.global_val.AppContext;
 import com.example.jill.firsttry.model.response.BaseResponse;
+import com.example.jill.firsttry.model.search.AllRecordBean;
 import com.example.jill.firsttry.model.search.SearchBean;
 import com.google.gson.Gson;
 
@@ -135,7 +136,7 @@ public class ApiUtil {
                         returnMessage= returnMessage.replaceAll("\\\\\"", "\"");
                         UserRecord  ur =  new Gson().fromJson(returnMessage, UserRecord.class);
                         userRecord[0] = ur;
-                        System.out.println("测试成功"+ur.getFilepath());
+//                        System.out.println("测试成功"+ur.getFilepath());
                     }
                     else{
                         Toast.makeText(superActivity, "服务器发生错误，请联系客服", Toast.LENGTH_LONG).show();
@@ -173,6 +174,65 @@ public class ApiUtil {
         return userRecord[0];
     }
 
+    public AllRecordBean getAllRecord(final Activity superActivity){
+        final AllRecordBean[] allRecordBeans = {new AllRecordBean()};
+        @SuppressLint("HandlerLeak") final Handler mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg){
+                switch (msg.what){
+                    case NETWORK_ERROR:
+                        Toast.makeText(superActivity, "验证码发送失败，请检查网络连接", Toast.LENGTH_LONG).show();
+                        break;
+                    case SERVER_ERROR:
+                        Toast.makeText(superActivity, "服务器发生错误，请联系客服", Toast.LENGTH_LONG).show();
+                        break;
+                }
+                if(msg.what==1){
+                    String returnMessage = (String) msg.obj;
+                    returnMessage= returnMessage.replaceAll("\\\\\"", "\"");
+                    returnMessage= returnMessage.replaceAll("\"\\[", "\\[");
+                    returnMessage= returnMessage.replaceAll("\\]\"", "\\]");
+                    AllRecordBean  arb =  new Gson().fromJson(returnMessage, AllRecordBean.class);
+                    allRecordBeans[0] = arb;
+                    String A = arb.getStatusExpression();
+                    if(A.equals("Success")){
+                        System.out.println("测试成功"+arb.getData().get(0).getFilepath());
+                    }
+                    else{
+                        Toast.makeText(superActivity, "服务器发生错误，请联系客服", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        };
+        final OkHttpClient client = new OkHttpClient();
+
+        String mUrl = "http://58.87.73.51:8080/musicshop/api/queryrecord";
+        final Request request = new Request.Builder()
+                .addHeader("token", getUserToken(superActivity))
+                .url(mUrl)
+                .build();
+        new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void run() {
+                Response response;
+                try {
+                    //回调
+                    response = client.newCall(request).execute();
+                    if (response.isSuccessful()) {
+                        //将服务器响应的参数response.body().string())发送到hanlder中，并更新ui
+                        mHandler.obtainMessage(1, Objects.requireNonNull(response.body()).string()).sendToTarget();
+                    } else {
+                        throw new IOException("Unexpected code:" + response);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        return allRecordBeans[0];
+
+    }
     private String getUserToken(Activity activity){
         AppContext app = (AppContext)activity.getApplication();
         return app.getUser().getData();

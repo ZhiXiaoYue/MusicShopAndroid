@@ -46,6 +46,7 @@ import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.UserRecord;
 import com.example.jill.firsttry.model.global_val.AppContext;
 import com.example.jill.firsttry.model.global_val.UserBean;
+import com.example.jill.firsttry.model.search.AllRecordBean;
 import com.google.gson.Gson;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -209,7 +210,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
         });
-
     }
     private void refresh() {
         finish();
@@ -247,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             UserRecord ur = apu.getURById("33",MainActivity.this);
             apu.getSongById("31",MainActivity.this);
          ///   System.out.println(song.getSname());
+            AllRecordBean arb = apu.getAllRecord(MainActivity.this);
             songs = new Song[]{testWithFakeData(),testWithFakeData()};
             recommandImage.setVisibility(View.INVISIBLE);
             userRecordImage.setVisibility(View.VISIBLE); //显示记录

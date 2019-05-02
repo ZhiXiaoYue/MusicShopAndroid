@@ -1,19 +1,20 @@
 package com.example.jill.firsttry.model.search;
 
 import com.example.jill.firsttry.model.Song;
+import com.example.jill.firsttry.model.UserRecordSimple;
 
 import java.util.ArrayList;
 
-public class SearchBean {
+public class AllRecordBean {
     private String statusCode;
     private String statusExpression;
-    public ArrayList<Song> data;
+    public ArrayList<UserRecordSimple> data;
 
-    public ArrayList<Song> getData() {
+    public ArrayList<UserRecordSimple> getData() {
         return data;
     }
 
-    public void setData(ArrayList<Song> data) {
+    public void setData(ArrayList<UserRecordSimple> data) {
         this.data = data;
     }
 
