@@ -76,7 +76,7 @@ public class DownloadPrepareActivity extends Activity {
                         new String[]{Consts.SONG_DIR, Consts.SONG_DIR, Consts.SAVE_SONG_DIR},
                         new String[]{currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".krc",
                                 currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3",
-                                currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + userRecord.getRecordTime() + ".mp3"
+                                currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + userRecord.getTime() + ".mp3"
                         });
 //                task.execute(new String[]{Consts.ENDPOINT + currentSong.getLyric(),
 //                        Consts.ENDPOINT + currentSong.getInstrumental(),

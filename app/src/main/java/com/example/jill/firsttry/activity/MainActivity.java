@@ -28,10 +28,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.log4j.chainsaw.Main;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.jill.firstry.event.OnSearchByIdFinishEvent;
 import com.example.jill.firsttry.Adapter.SongCardAdapter;
 import com.example.jill.firsttry.Fragments.SearchSongResultFragment;
 import com.example.jill.firsttry.R;
@@ -206,25 +210,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        Button button=findViewById(R.id.button);
-        final TextView textView=findViewById(R.id.textview);
-        final ApiUtil api=new ApiUtil();
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Song song=api.getSongById("31",MainActivity.this);
-                textView.setText(song.getSname());
-            }
-        });
     }
     private void refresh() {
         finish();
         Intent intent = new Intent(MainActivity.this, MainActivity.class);
         startActivity(intent);
     }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onStart() {
         super.onStart();
+        EventBus.getDefault().register(this);
         int flag = 0; //判断是推荐还是用户记录
         recommandImage = findViewById(R.id.recommandToYou);
         userRecordImage = findViewById(R.id.user_record_in_main);
@@ -249,6 +245,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             flag = 1;
             ApiUtil apu = new ApiUtil();
             UserRecord ur = apu.getURById("33",MainActivity.this);
+            apu.getSongById("31",MainActivity.this);
+         ///   System.out.println(song.getSname());
             songs = new Song[]{testWithFakeData(),testWithFakeData()};
             recommandImage.setVisibility(View.INVISIBLE);
             userRecordImage.setVisibility(View.VISIBLE); //显示记录
@@ -420,4 +418,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return  new File(Consts.SONG_DIR+song.getSname() + "-" + song.getSingerName() + "-" + song.getAlbum() + "-" + song.getSid() +"-"+record.getTime()+ ".mp3").exists();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnSearchByIdFinishEvent(OnSearchByIdFinishEvent event) {
+        Song song=event.getSong();
+        System.out.println("传出了"+song.getSname());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
 }
