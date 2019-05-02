@@ -2,6 +2,7 @@ package com.example.jill.firsttry.model;
 
 public class LocalRecord {
     private String album;//专辑名
+    private int rid;
 
     public String getAlbum() {
         return album;
@@ -47,4 +48,12 @@ public class LocalRecord {
     private String singerName;//歌手名
     private String sname;//歌曲名
     private String recordTime;//时间戳
+
+    public int getRid() {
+        return rid;
+    }
+
+    public void setRid(int rid) {
+        this.rid = rid;
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.jill.firsttry.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -125,6 +126,7 @@ public class ListenOriginalActivity extends AppCompatActivity {
 
     final OkHttpClient client = new OkHttpClient();
 
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -301,7 +303,7 @@ public class ListenOriginalActivity extends AppCompatActivity {
 
                     //歌声
                     mMediaPlayerSound=new MediaPlayer();
-                    String fileUrlSound= currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+currentRecord.getTime()+ ".mp3";
+                    String fileUrlSound= currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+currentRecord.getTime()+ "-"+currentRecord.getRid()+".mp3";
                     mMediaPlayerSound.reset();
                     try {
                         mMediaPlayerSound.setDataSource(fileUrlSound);
@@ -400,6 +402,7 @@ public class ListenOriginalActivity extends AppCompatActivity {
     /**
      * 加载歌词文件
      */
+    @SuppressLint("StaticFieldLeak")
     private void loadLrcFile() {
 
         new AsyncTask<String, Integer, String>() {

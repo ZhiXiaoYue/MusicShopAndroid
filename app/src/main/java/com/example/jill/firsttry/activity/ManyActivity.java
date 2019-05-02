@@ -1,5 +1,6 @@
 package com.example.jill.firsttry.activity;
 
+        import android.annotation.SuppressLint;
         import android.app.AlertDialog;
         import android.content.Context;
         import android.content.DialogInterface;
@@ -119,6 +120,7 @@ public class ManyActivity extends AppCompatActivity {
 
     //private final String TAG = FloatActivity.class.getName();
 
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -305,11 +307,11 @@ public class ManyActivity extends AppCompatActivity {
                         }
                     });
 
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
                     String time = df.format(new Date());
 
                     //初始化录音
-                    String fileName = currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+time+ ".mp3";
+                    String fileName = currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+time+"-0.mp3";
                     initRecorder(Consts.SAVE_SONG_DIR, fileName);
 
                     //快进事件

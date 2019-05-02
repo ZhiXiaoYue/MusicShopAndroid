@@ -63,11 +63,9 @@ public class GetCompanyFromDir {
             localRecord.setSname(fileAfterSplitStringList[0]);
             localRecord.setSingerName(fileAfterSplitStringList[1]);
             localRecord.setAlbum(fileAfterSplitStringList[2]);
-            localRecord.setSid(new Integer(fileAfterSplitStringList[3]));
-            String year=fileAfterSplitStringList[4];
-            String month=fileAfterSplitStringList[5];
-            String dayAndTime=fileAfterSplitStringList[6];
-            localRecord.setRecordTime(year+"-"+month+"-"+dayAndTime);
+            localRecord.setSid(Integer.valueOf(fileAfterSplitStringList[3]));
+            localRecord.setRecordTime(fileAfterSplitStringList[4]);
+            localRecord.setRid(Integer.valueOf(fileAfterSplitStringList[5]));
             localRecords.add(localRecord);
         }
         return localRecords;
