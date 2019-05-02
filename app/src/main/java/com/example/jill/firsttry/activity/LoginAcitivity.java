@@ -78,7 +78,6 @@ public class LoginAcitivity extends BaseActivity {
                     case "Success":
                         userBean.setName(phoneText.getText().toString().trim());
                         userBean.setPhone(phoneText.getText().toString().trim());
-
                         app.setState(A);//将返回值存入后台bean中
                         app.setUser(userBean);
                         File filedir = new File(Consts.DIR+ userBean.getPhone()+"/");
