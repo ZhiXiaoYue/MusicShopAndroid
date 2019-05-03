@@ -43,6 +43,8 @@ public class ManyActivity extends AppCompatActivity {
 
     private Song currentSong;
 
+    private String time;
+
     /**
      * 多行歌词视图
      */
@@ -277,12 +279,15 @@ public class ManyActivity extends AppCompatActivity {
 
         //
         mPlayBtn = findViewById(R.id.play);
+
         mPlayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if (mMediaPlayer == null) {
 
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+                    time = df.format(new Date());
                     mHandler.sendEmptyMessage(MUSIC_INIT);
 
                     //
@@ -307,8 +312,7 @@ public class ManyActivity extends AppCompatActivity {
                         }
                     });
 
-                    @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-                    String time = df.format(new Date());
+
 
                     //初始化录音
                     String fileName = currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+time+"-0.mp3";
@@ -370,7 +374,6 @@ public class ManyActivity extends AppCompatActivity {
     /**
      * 加载歌词文件
      */
-    @SuppressLint("StaticFieldLeak")
     private void loadLrcFile() {
 
         new AsyncTask<String, Integer, String>() {
@@ -384,6 +387,7 @@ public class ManyActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 try {
+                    Thread.sleep(500);
                     LyricsReader lyricsReader = new LyricsReader();
                     byte[] data = new byte[inputStream.available()];
                     inputStream.read(data);
@@ -513,8 +517,9 @@ public class ManyActivity extends AppCompatActivity {
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        File file=new File("/mnt/sdcard/MusicShopDownLoad/MySongs/"+currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3");
+                        File file=new File(Consts.SAVE_SONG_DIR+currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+time+"-0.mp3");
                         file.delete();
+                        //System.out.println(Consts.SAVE_SONG_DIR+currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+time+"-0.mp3");
                         finish();
                     }
                 }).show();

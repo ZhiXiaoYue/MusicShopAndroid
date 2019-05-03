@@ -4,10 +4,14 @@ import android.util.Log;
 
 import com.example.jill.firsttry.model.global_val.UserBean;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -76,4 +80,24 @@ public class HttpUtil {
                 .build();
         return client.newCall(request).execute();
     }
+
+//    public static void postFile(String url,int sid,String token,final ProgressListener listener, Callback callback, File...files){
+//        MediaType mediaType = MediaType.parse("multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
+//        MultipartBody.Builder builder = new MultipartBody.Builder();
+//        builder.setType(MultipartBody.FORM);
+//        builder.setType(mediaType);
+//        Log.i("huang","files[0].getName()=="+files[0].getName());
+//        builder.addFormDataPart("file",files[0].getName());
+//        builder.addFormDataPart("sid",Integer.valueOf(sid).toString());
+//        builder.addFormDataPart("filename",files[0].getName(),RequestBody.create(MediaType.parse("multipart/form-data"),files[0]);
+//
+//        MultipartBody multipartBody = builder.build();
+//
+//        Request request  = new Request.Builder()
+//                .url(url)
+//                .post(new ProgressRequestBody(multipartBody,listener))
+//                .addHeader("token",token)
+//                .build();
+//        okHttpClient.newCall(request).enqueue(callback);
+//    }
 }
