@@ -1,5 +1,6 @@
 package com.example.jill.firsttry.forLyrics.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -170,6 +171,7 @@ public class ManyLyricsView extends LinearLayout {
     /**
      * Handler处理滑动指示器隐藏和歌词滚动到当前播放的位置
      */
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
