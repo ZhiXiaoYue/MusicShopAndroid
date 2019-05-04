@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.example.jill.firsttry.Fragments.MyModifyListFragment;
 import com.example.jill.firsttry.Fragments.MysongListFragment;
 import com.example.jill.firsttry.R;
 
@@ -21,6 +22,7 @@ public class MyModifyActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
         setContentView(R.layout.activity_fragement);
         setTitle("我的修改歌曲");
+
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
         if (fragment == null) {
@@ -31,7 +33,7 @@ public class MyModifyActivity extends AppCompatActivity {
         }
     }
     protected Fragment createFragment() {
-        return new MysongListFragment();
+        return new MyModifyListFragment();
 
     }
 }

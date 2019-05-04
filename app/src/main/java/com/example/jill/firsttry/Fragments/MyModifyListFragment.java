@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.example.jill.firsttry.Lab.MyModifyLab;
 import com.example.jill.firsttry.R;
 import com.example.jill.firsttry.Utils.Consts;
+import com.example.jill.firsttry.activity.ListenOriginalActivity;
 import com.example.jill.firsttry.activity.SubmitPrepareActivity;
 import com.example.jill.firsttry.model.LocalRecord;
 import com.example.jill.firsttry.model.Song;
@@ -98,8 +99,7 @@ public class MyModifyListFragment extends Fragment {
             UserRecord userRecord=new UserRecord();
             userRecord.setRid(keys.getSid());
             userRecord.setTime(keys.getRecordTime());
-            SubmitPrepareActivity.actionStart(getContext(),song,userRecord);
-            //ListenOriginalActivity.actionStart(getContext(),song,userRecord);
+            ListenOriginalActivity.actionStart(getActivity(), song, userRecord);
         }
 
     }

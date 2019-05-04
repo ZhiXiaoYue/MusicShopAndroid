@@ -165,7 +165,7 @@ public class SubmitPrepareActivity extends Activity {
             public void onClick(View v) {
                 //下载原声录音
                 DownloadTask task = new DownloadTask(SubmitPrepareActivity.this,
-                        new String[]{Consts.SAVE_SONG_DIR},
+                        new String[]{Consts.MODIFY_SONG_DIR},
                         new String[]{name_record});
                 task.execute(URL_record);
                 showProgressDialog();
