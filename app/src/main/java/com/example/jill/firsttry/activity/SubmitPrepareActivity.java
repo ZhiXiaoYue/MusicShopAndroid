@@ -64,8 +64,8 @@ public class SubmitPrepareActivity extends Activity {
     private Song currentSong;
     private UserRecord currentRecord;
 
-    private Song fakeSong;
-    private UserRecord fakeUserRecord;
+    private Song fakeSong=new Song();
+    private UserRecord fakeUserRecord=new UserRecord();
 
     public SubmitPrepareActivity() {
     }
@@ -75,6 +75,7 @@ public class SubmitPrepareActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.acticity_prepare_submit);
         initComponent(); //绑定所有的组件
+        setFakeSong();
         //currentSong = testWithFakeData(); // 测试的时候装一点假数据，后来删掉就改行+testWithFakeData函数+取消下一行的注释
         //从searchctivity获取用户选择的歌曲
         currentSong = (Song) getIntent().getSerializableExtra("song_data");
@@ -107,19 +108,34 @@ public class SubmitPrepareActivity extends Activity {
             }
         });
         //修改
-       // final String name_record= fakeSong.getSname() + "-" + fakeSong.getSingerName() + "-" + fakeSong.getAlbum() + "-" + fakeSong.getSid() + fakeUserRecord.getTime() + "-" + fakeUserRecord.getRid()+".mp3";
-        //final String URL_record = Consts.ENDPOINT+fakeUserRecord.getFilepath();
-//        modifyButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //下载原声录音
-//                DownloadTask task = new DownloadTask(SubmitPrepareActivity.this,
-//                        new String[]{Consts.SAVE_SONG_DIR},
-//                        new String[]{name_record});
-//                task.execute(URL_record);
-//                showProgressDialog();
-//            }
-//        });
+        final String name_record= fakeSong.getSname() + "-" + fakeSong.getSingerName() + "-" + fakeSong.getAlbum() + "-" + fakeSong.getSid() + fakeUserRecord.getTime() + "-" + fakeUserRecord.getRid()+".mp3";
+        final String URL_record = Consts.ENDPOINT+fakeUserRecord.getFilepath();
+        modifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //下载原声录音
+                DownloadTask task = new DownloadTask(SubmitPrepareActivity.this,
+                        new String[]{Consts.SAVE_SONG_DIR},
+                        new String[]{name_record});
+                task.execute(URL_record);
+                showProgressDialog();
+            }
+        });
+    }
+
+    public void setFakeSong(){
+        this.fakeSong.setSid(48);
+        this.fakeSong.setSname("原谅（Cover 张玉华）");
+        this.fakeSong.setAlbum("头号粉丝");
+        this.fakeSong.setAlbumPic("static/album_thumbnails/刘瑞琦-头号粉丝.jpg");
+        this.fakeSong.setFilePath("static/music/原谅（Cover 张玉华）-刘瑞琦.mp3");
+        this.fakeSong.setInstrumental("static/instru/原谅（Cover 张玉华）刘瑞琦.mp3");
+        this.fakeSong.setLyric("static/lyric/原谅（Cover 张玉华）刘瑞琦.krc");
+        this.fakeSong.setSingerName("刘瑞琦");
+        this.fakeUserRecord.setRid(53);
+        this.fakeUserRecord.setScore("100");
+        this.fakeUserRecord.setTime("20190504205544");
+        this.fakeUserRecord.setFilepath("static/userUpload/1305139322020190504205544.mp3");
     }
 
     /**
