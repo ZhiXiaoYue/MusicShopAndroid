@@ -96,7 +96,7 @@ public class MysongListFragment extends Fragment {
             song.setAlbum(keys.getAlbum());
             song.setSid(keys.getSid());
             UserRecord userRecord=new UserRecord();
-            userRecord.setRid(keys.getSid());
+            userRecord.setRid(keys.getRid());
             userRecord.setTime(keys.getRecordTime());
             SubmitPrepareActivity.actionStart(getContext(),song,userRecord);
             //ListenOriginalActivity.actionStart(getContext(),song,userRecord);

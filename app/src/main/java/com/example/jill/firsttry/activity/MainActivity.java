@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int GET_DATA_SUCCESS = 1;
     public static final int NETWORK_ERROR = 2;
     public static final int SERVER_ERROR = 3;
+    private Recommandation rcd ;
     //代表LoginActivity的请求码
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -76,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<UserRecord> recordList = new ArrayList<>();
     private int flag;
     private TextView noneRecord;
-    ImageView recommandImage;
-    ImageView userRecordImage;
+    TextView recommandImage;
+    TextView userRecordImage;
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
         @Override
@@ -129,6 +130,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         initWindow();
         app = (AppContext)getApplication();
+        if(app.getState() == null) { //如果用户没有登录
+            rcd = new Recommandation();
+        }
         ImageView button_pic= findViewById(R.id.imageMenu);
         button_pic.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -143,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+
         drawerLayout = findViewById(R.id.activity_na);
         navigationView = findViewById(R.id.nav);
         menu= findViewById(R.id.main_menu);
@@ -218,19 +223,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-        flag = 0; //判断是推荐还是用户记录
         recommandImage = findViewById(R.id.recommandToYou);
         userRecordImage = findViewById(R.id.user_record_in_main);
         noneRecord = findViewById(R.id.none_record);
+        noneRecord.setVisibility(View.INVISIBLE);
+        super.onStart();
+        EventBus.getDefault().register(this);
+        flag = 0; //判断是推荐还是用户记录
         UserBean user= app.getUser();
         TextView u_name = findViewById(R.id.act_m_user_name);
         if(app.getState() == null) { //如果用户没有登录
-            Recommandation rcd = new Recommandation();
             songList = rcd.getRecommendation();
             userRecordImage.setVisibility(View.INVISIBLE); //显示推荐图片
-            noneRecord.setVisibility(View.INVISIBLE);
             recommandImage.setVisibility(View.VISIBLE);
             flag = 0;
             u_name.setText("请先登录");
@@ -262,9 +266,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     returnMessage= returnMessage.replaceAll("\"\\[", "\\[");
                     returnMessage= returnMessage.replaceAll("\\]\"", "\\]");
                     AllRecordBean arb = new Gson().fromJson(returnMessage, AllRecordBean.class);
-
                     String A = arb.getStatusExpression();
                     ArrayList<UserRecordSimple> userRecordSimples = arb.getData();
+                    if(userRecordSimples.size() == 0){
+                        noneRecord.setVisibility(View.VISIBLE);
+                    }
                     for (UserRecordSimple userRecordSimple : userRecordSimples) {
                         String rid = String.valueOf(userRecordSimple.getRid());
                         //根据rid查找用户记录
@@ -288,8 +294,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     returnMessage= returnMessage.replaceAll("\\\\\"", "\"");
                                     UserRecord ur =  new Gson().fromJson(returnMessage, UserRecord.class);
                                     recordList.add(ur);
-                                    if(ur.getMusic() == null)
+                                    if(ur.getMusic() == null){
                                         noneRecord.setVisibility(View.VISIBLE);
+                                    }
                                     else
                                         songList.add(ur.getMusic());
                                 }
@@ -359,17 +366,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         thread.start();
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        noneRecord.setVisibility(View.INVISIBLE);
         recommandImage.setVisibility(View.INVISIBLE);
         userRecordImage.setVisibility(View.VISIBLE); //显示记录
             u_name.setText(user.getName());
         }
-
         ImageButton buttonS = findViewById(R.id.button_search);
         buttonS.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
