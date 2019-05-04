@@ -7,16 +7,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.jill.firsttry.R;
 import com.example.jill.firsttry.Utils.Consts;
-import com.example.jill.firsttry.Utils.DownloadUtil;
 import com.example.jill.firsttry.Utils.ImageUtil;
 import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.UserRecord;
@@ -40,6 +41,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import java.util.List;
 import java.util.UUID;
 
@@ -86,6 +92,50 @@ public class SubmitPrepareActivity extends Activity {
         //设置界面信息
         singer.setText(currentSong.getSingerName());
         songName.setText(currentSong.getSname());
+        int Sid = currentSong.getSid();
+        @SuppressLint("HandlerLeak") final Handler mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == 1) {
+                    String returnMessage = (String) msg.obj;
+                    BaseResponse bsr = new Gson().fromJson(returnMessage, BaseResponse.class);
+                    returnMessage = bsr.getData();
+                    returnMessage = returnMessage.replaceAll("\\\\\"", "\"");
+                    returnMessage = returnMessage.replaceAll("\"\\[", "");
+                    returnMessage = returnMessage.replaceAll("]\"", "");
+                    returnMessage = returnMessage.replace("[","");
+                    returnMessage = returnMessage.replace("]","");
+                    Song s = new Gson().fromJson(returnMessage, Song.class);
+                    currentSong.setAlbumPic(s.getAlbumPic());
+                }
+            }
+        };
+        final OkHttpClient client = new OkHttpClient();
+        @SuppressLint("DefaultLocale") String mUrl = String.format("http://58.87.73.51:8080/musicshop/api/search?keyword=%d&type=4",Sid);
+        final Request request = new Request.Builder()
+                .addHeader("token", "13108296618^1552615513")
+                .url(mUrl)
+                .build();
+        Thread thread = new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void run() {
+                Response response;
+                try {
+                    //回调
+                    response = client.newCall(request).execute();
+                    if (response.isSuccessful()) {
+                        //将服务器响应的参数response.body().string())发送到hanlder中，并更新ui
+                        mHandler.obtainMessage(1, Objects.requireNonNull(response.body()).string()).sendToTarget();
+                    } else {
+                        throw new IOException("Unexpected code:" + response);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
         songIcon.setImageURL("http://58.87.73.51:8080/musicshop/" + currentSong.getAlbumPic());
         //试听
         listenButton.setOnClickListener(new View.OnClickListener() {
@@ -148,7 +198,7 @@ public class SubmitPrepareActivity extends Activity {
         UserRecord userRecord;
         Activity context;
 
-        public void renameFile(String path,String oldname,String newname){
+        void renameFile(String path, String oldname, String newname){
             if(!oldname.equals(newname)){//新的文件名和以前文件名不同时,才有必要进行重命名
                 File oldfile=new File(path+"/"+oldname);
                 File newfile=new File(path+"/"+newname);
