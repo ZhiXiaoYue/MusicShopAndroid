@@ -19,8 +19,8 @@
 
     <TextView
         android:id="@+id/text_view_mysong_artists_and_album"
-        android:layout_width="wrap_content"
-        android:layout_height="26dp"
+        android:layout_width="114dp"
+        android:layout_height="22dp"
         android:layout_marginTop="5dp"
         android:text="专辑名-作者"
         android:textColor="@color/slategray"
@@ -28,15 +28,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_view_mysong_name" />
 
+    <TextView
+        android:id="@+id/text_view_time"
+        android:layout_width="135dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="64dp"
+        android:text="2019053015742830"
+        android:textColor="@color/slategray"
+        android:textSize="15dp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:ignore="MissingConstraints" />
+
     <Button
         android:id="@+id/mysongdelete_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="59dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="24dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:focusable="false"
-        android:text="删除歌曲"
+        android:text="删除"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="6dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
