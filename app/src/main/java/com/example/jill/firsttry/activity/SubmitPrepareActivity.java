@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -19,6 +20,8 @@ import com.example.jill.firsttry.Utils.ImageUtil;
 import com.example.jill.firsttry.model.Song;
 import com.example.jill.firsttry.model.UserRecord;
 import com.example.jill.firsttry.model.global_val.AppContext;
+import com.example.jill.firsttry.model.response.BaseResponse;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -28,6 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -62,9 +66,9 @@ public class SubmitPrepareActivity extends Activity {
             @Override
             public void onClick(View v) {
                 System.out.println("执行了click");
-                String fileName = Consts.SAVE_SONG_DIR+currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+currentRecord.getTime()+ ".mp3";
+                String fileName = Consts.SAVE_SONG_DIR+currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+currentRecord.getTime()+ "-0.mp3";
                 showProgressDialog();
-                UploadTask uploadTask=new UploadTask(SubmitPrepareActivity.this);
+                UploadTask uploadTask=new UploadTask(SubmitPrepareActivity.this,currentSong);
                 //要上传的文件,url,sid
                 uploadTask.execute(fileName,Consts.addRecordURL,Integer.valueOf(currentSong.getSid()).toString());
 
@@ -78,11 +82,29 @@ public class SubmitPrepareActivity extends Activity {
     @SuppressLint("StaticFieldLeak")
     private class UploadTask extends AsyncTask<String, Integer, String> {
 
+        Song currentSong;
         UserRecord userRecord;
         Activity context;
 
-        public UploadTask(Activity context){
+        public void renameFile(String path,String oldname,String newname){
+            if(!oldname.equals(newname)){//新的文件名和以前文件名不同时,才有必要进行重命名
+                File oldfile=new File(path+"/"+oldname);
+                File newfile=new File(path+"/"+newname);
+                if(!oldfile.exists()){
+                    return;//重命名文件不存在
+                }
+                if(newfile.exists())//若在该目录下已经有一个文件和新文件名相同，则不允许重命名
+                    System.out.println(newname+"已经存在！");
+                else oldfile.renameTo(newfile);
+            }else{
+                System.out.println("新文件名和旧文件名相同...");
+            }
+        }
+
+
+        UploadTask(Activity context,Song song){
             this.context=context;
+            currentSong=song;
         }
 
         @Override
@@ -90,6 +112,7 @@ public class SubmitPrepareActivity extends Activity {
             //最终结果的显示
            progressDialog.setMessage(result);
            progressDialog.setCancelable(true);
+
         }
 
         @Override
@@ -107,9 +130,10 @@ public class SubmitPrepareActivity extends Activity {
             int sid=Integer.valueOf(params[2]);
             //下面即手机端上传文件的代码
             String LINE_END = "\r\n";
-            String PREFIX = "--";
+            String PREFIX="--";
+            String BOUNDARY = "----WebKitFormBoundary"+"7MA4YWxkTrZu0gW";
             //边界标识，随机生成
-            String BOUNDARY = UUID.randomUUID().toString();
+           // String BOUNDARY = PREFIX+UUID.randomUUID().toString();
             try {
                 URL url = new URL(uploadUrl);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url
@@ -122,33 +146,39 @@ public class SubmitPrepareActivity extends Activity {
                 httpURLConnection.setUseCaches(false);
                 //请求方式
                 httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setRequestProperty("Content-Type",
+                        "multipart/form-data; boundary=" + BOUNDARY);
                 httpURLConnection.setRequestProperty("token",((AppContext)context.getApplication()).getUser().getData());
+                httpURLConnection.setRequestProperty("cache-control","no-cache");
                 System.out.println(((AppContext)context.getApplication()).getUser().getData());
                // httpURLConnection.setConnectTimeout(30 * 1000);
-                httpURLConnection.setRequestProperty("Content-Type",
-                        "multipart/form-data;boundary=" + BOUNDARY);
+                httpURLConnection.connect();
 
                 DataOutputStream dos = new DataOutputStream(httpURLConnection
                         .getOutputStream());
                 StringBuffer sb=new StringBuffer();
-                //换行
-                sb.append(LINE_END);
-                //分界
+                //构造body
+                //分界+\r\n
                 sb.append(PREFIX).append(BOUNDARY).append(LINE_END);
                 //参数的键
-                sb.append("Content-Disposition: form-data; name=\"" + "sid" + "\"" + LINE_END);
-                //参数的值
-                sb.append(sid);
-                //分界，开始拼接文件
+                sb.append("Content-Disposition: form-data; name=\"sid\"\r\n\r\n");
+                //sid
+                sb.append(Integer.valueOf(sid));
+                sb.append(LINE_END);
                 sb.append(PREFIX).append(BOUNDARY).append(LINE_END);
                 /**
                  * 文件名
                  */
-                sb.append("Content-Disposition: form-data; name=\"file\"; filename=\""
-                        + filePath.substring(filePath.lastIndexOf("/") + 1)
-                        + "\"" + LINE_END);
+                sb.append("Content-Disposition:form-data; name=\"file\";filename=\"");
+                //文件名
+               sb.append(filePath.substring(filePath.lastIndexOf("/")+1)+"\"");
+                sb.append(LINE_END);
+               sb.append("Content-Type:audio/mpeg");
+                sb.append(LINE_END);
+                sb.append(LINE_END);
                 //写入数据
-                dos.write(sb.toString().getBytes());
+                dos.write(sb.toString().getBytes("utf-8"));
+                dos.flush();
                 //获取文件总大小
                 FileInputStream fis = new FileInputStream(new File(filePath));
                 long total = fis.available();
@@ -157,26 +187,53 @@ public class SubmitPrepareActivity extends Activity {
                 int length = 0;
                 while ((count = fis.read(buffer)) != -1) {
                     dos.write(buffer, 0, count);
+                    System.out.println("byte:"+ Arrays.toString(buffer));
                     //获取进度，调用publishProgress()
                     length += count;
                     publishProgress((int) ((length / (float) total) * 100));
                 }
-                fis.close();
-                //一定还得加换行
-                dos.writeBytes(LINE_END);
-                dos.writeBytes(PREFIX+BOUNDARY+PREFIX+LINE_END);
                 dos.flush();
-
+                //一定还得加换行
+                dos.write(LINE_END.getBytes());
+                dos.write(LINE_END.getBytes());
+                dos.write((PREFIX+BOUNDARY).getBytes());
+                dos.flush();
                 //获得返回数据
-                InputStream is = httpURLConnection.getInputStream();
-                InputStreamReader isr = new InputStreamReader(is, "utf-8");
-                BufferedReader br = new BufferedReader(isr);
+                InputStream is;
+                InputStreamReader isr;
+                BufferedReader br ;
                 String result="";
                 String readline=null;
-                while ((readline=br.readLine())!=null){
-                    result+=readline;
+
+                if (httpURLConnection.getResponseCode() / 100 == 2) { // 2xx code means success
+                    is = httpURLConnection.getInputStream();
+                    isr= new InputStreamReader(is, "utf-8");
+                    br=new BufferedReader(isr);
+                    while ((readline=br.readLine())!=null){
+                        result+=readline;
+                        System.out.println("成功了:"+result);
+                    }
+                    Gson gson = new Gson();
+                    BaseResponse baseResponse = gson.fromJson(result, BaseResponse.class);
+                    String data=baseResponse.getData();
+                    data=data.replaceAll("\\\\\"", "\"");
+                    data=data.replaceAll("\"\\{","{");
+                    System.out.println("转义后："+data);
+                    userRecord=gson.fromJson(data,UserRecord.class);
+                    //重命名文件
+                    String oldName=currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+currentRecord.getTime()+ "-0.mp3";
+                    String newName=currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+userRecord.getTime()+ "-"+userRecord.getRid()+".mp3";
+                    renameFile(Consts.SAVE_SONG_DIR,oldName,newName);
+                } else {
+                    is = httpURLConnection.getErrorStream();
+                    isr= new InputStreamReader(is, "utf-8");
+                    br=new BufferedReader(isr);
+                    while ((readline=br.readLine())!=null){
+                        result+=readline;
+                    }
+                    System.out.println("错误了:"+result);
                 }
-                System.out.println("结果是:"+result);
+                fis.close();
                 dos.close();
                 is.close();
                 return "上传成功";

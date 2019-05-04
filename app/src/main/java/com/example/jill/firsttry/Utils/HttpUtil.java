@@ -89,7 +89,7 @@ public class HttpUtil {
 //        Log.i("huang","files[0].getName()=="+files[0].getName());
 //        builder.addFormDataPart("file",files[0].getName());
 //        builder.addFormDataPart("sid",Integer.valueOf(sid).toString());
-//        builder.addFormDataPart("filename",files[0].getName(),RequestBody.create(MediaType.parse("multipart/form-data"),files[0]);
+//        builder.addFormDataPart("filename",files[0].getName(),(RequestBody.create(MediaType.parse("multipart/form-data"),files[0]));
 //
 //        MultipartBody multipartBody = builder.build();
 //
