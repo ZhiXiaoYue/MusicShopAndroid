@@ -130,8 +130,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         initWindow();
         app = (AppContext)getApplication();
+        recommandImage = findViewById(R.id.recommandToYou);
+        userRecordImage = findViewById(R.id.user_record_in_main);
+        noneRecord = findViewById(R.id.none_record);
+        noneRecord.setVisibility(View.INVISIBLE);
+        flag = 0; //判断是推荐还是用户记录
         if(app.getState() == null) { //如果用户没有登录
             rcd = new Recommandation();
+        }
+        else{
+
         }
         ImageView button_pic= findViewById(R.id.imageMenu);
         button_pic.setOnClickListener(new View.OnClickListener() {
@@ -223,17 +231,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onStart() {
-        recommandImage = findViewById(R.id.recommandToYou);
-        userRecordImage = findViewById(R.id.user_record_in_main);
-        noneRecord = findViewById(R.id.none_record);
-        noneRecord.setVisibility(View.INVISIBLE);
+        songList.clear();
         super.onStart();
         EventBus.getDefault().register(this);
-        flag = 0; //判断是推荐还是用户记录
         UserBean user= app.getUser();
         TextView u_name = findViewById(R.id.act_m_user_name);
         if(app.getState() == null) { //如果用户没有登录
             songList = rcd.getRecommendation();
+            onRes();
             userRecordImage.setVisibility(View.INVISIBLE); //显示推荐图片
             recommandImage.setVisibility(View.VISIBLE);
             flag = 0;
@@ -275,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String rid = String.valueOf(userRecordSimple.getRid());
                         //根据rid查找用户记录
                         @SuppressLint("HandlerLeak") final Handler mHandler2 = new Handler(){
+                            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                             @Override
                             public void handleMessage(Message msg){
                             switch (msg.what){
@@ -297,8 +303,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     if(ur.getMusic() == null){
                                         noneRecord.setVisibility(View.VISIBLE);
                                     }
-                                    else
+                                    else{
                                         songList.add(ur.getMusic());
+                                        onRes();
+                                    }
                                 }
                             else{
                                     Toast.makeText(MainActivity.this, "服务器发生错误，请联系客服", Toast.LENGTH_LONG).show();
@@ -332,7 +340,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         }).start();
                     }
-                    songList.clear();
                     if(!A.equals("Success")){
                         Toast.makeText(MainActivity.this, "服务器发生错误，请联系客服", Toast.LENGTH_LONG).show();
                     }
@@ -380,13 +387,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onRes() {
 
         /* 3.15
          * 填入歌曲
          */
+        System.out.println("成功到达1"+songList.size());
+        if(songList.size()>0)
+            System.out.println("测试MAIN"+songList.get(0).getSname());
         GridLayoutManager layoutManager = new GridLayoutManager(this,3);
         RecyclerView recyclerView = findViewById(R.id.recycler_view_in_main);
         recyclerView.setLayoutManager(layoutManager);
