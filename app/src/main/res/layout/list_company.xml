@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="22dp"
         android:layout_marginTop="8dp"
-        android:text="歌名啦啦啦啦"
+        android:text="歌名啦啦啦啦啦啦啦"
         android:textColor="@color/black"
         android:textSize="18dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,14 +29,14 @@
         app:layout_constraintTop_toBottomOf="@id/text_view_com_name" />
 
     <Button
-        android:id="@+id/comdelete_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/mysongdelete_button"
+        android:layout_width="59dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="12dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:focusable="false"
-        android:text="删除伴奏"
+        android:text="删除"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="6dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 </android.support.constraint.ConstraintLayout>

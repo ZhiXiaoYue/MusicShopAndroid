@@ -70,6 +70,7 @@ public class MysongListFragment extends Fragment {
 
         private TextView mysongNameTextView;
         private TextView mysongAlbAndArtistsTextView;
+        private TextView mysongTimeTextView;
         private Button mysongDeleteButton;
 
         MysongCrimeHolder(LayoutInflater inflater, ViewGroup parent) {
@@ -79,13 +80,15 @@ public class MysongListFragment extends Fragment {
             mysongNameTextView = itemView.findViewById(R.id.text_view_mysong_name);
             mysongAlbAndArtistsTextView = itemView.findViewById(R.id.text_view_mysong_artists_and_album);
             mysongDeleteButton=itemView.findViewById(R.id.mysongdelete_button);
+            mysongTimeTextView=itemView.findViewById(R.id.text_view_time);
         }
 
         @SuppressLint("SetTextI18n")
         public void bind(LocalRecord keys) {
             this.keys=keys;
-            mysongNameTextView.setText(keys.getSname()+keys.getRecordTime());
+            mysongNameTextView.setText(keys.getSname());
             mysongAlbAndArtistsTextView.setText(keys.getSingerName()+"-"+keys.getAlbum());
+            mysongTimeTextView.setText(keys.getRecordTime());
         }
 
         @Override

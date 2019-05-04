@@ -29,11 +29,16 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 /**
  * 进入准备界面：下载
  */
 public class DownloadPrepareActivity extends Activity {
-    public static String URL="http://np01.sycdn.kuwo.cn/0bdda78b64f000dda8ee7dc5526244af/5cc91796/resource/n3/15/95/3958571150.mp3";
+   // public static String URL="http://np01.sycdn.kuwo.cn/0bdda78b64f000dda8ee7dc5526244af/5cc91796/resource/n3/15/95/3958571150.mp3";
     private Button downloadButton;
     private TextView singer;
     private TextView songName;
@@ -66,26 +71,27 @@ public class DownloadPrepareActivity extends Activity {
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2019/4/30 下载歌曲，下载完成后跳转播放,url为recordUrl
-                //如果伴奏存在就不去下载了
-//                if (!(new File(Consts.SONG_DIR + currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3").exists())) {
-//                    //  download();
-//                }
-                //下载原声录音
-                DownloadTask task = new DownloadTask(DownloadPrepareActivity.this,
-                        new String[]{Consts.SONG_DIR, Consts.SONG_DIR, Consts.SAVE_SONG_DIR},
-                        new String[]{currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".krc",
-                                currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3",
-                                currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + userRecord.getTime() + "-" + userRecord.getRid()+".mp3"
-                        });
-//                task.execute(new String[]{Consts.ENDPOINT + currentSong.getLyric(),
-//                        Consts.ENDPOINT + currentSong.getInstrumental(),
-//                        Consts.ENDPOINT + userRecord.getRecordUrl(),
-//                });
+                String name_lyric=currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".krc";
+                String name_accompany=currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3";
+                String name_record= currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + userRecord.getTime() + "-" + userRecord.getRid()+".mp3";
                 String URL_lyric = Consts.ENDPOINT+currentSong.getLyric();
                 String URL_accompany = Consts.ENDPOINT+currentSong.getInstrumental();
                 String URL_record = Consts.ENDPOINT+userRecord.getFilepath();
-                task.execute(new String[]{URL_lyric,URL_accompany,URL_record});
+                // TODO: 2019/4/30 下载歌曲，下载完成后跳转播放,url为recordUrl
+                //如果伴奏存在就不去下载了
+                if (!(new File(Consts.SONG_DIR + currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid() + ".mp3").exists())) {
+                    //下载原声录音
+                    DownloadTask task = new DownloadTask(DownloadPrepareActivity.this,
+                            new String[]{Consts.SAVE_SONG_DIR},
+                            new String[]{name_record});
+                    task.execute(URL_record);
+                }else {
+                    //下载原声录音和伴奏
+                    DownloadTask task = new DownloadTask(DownloadPrepareActivity.this,
+                            new String[]{Consts.SONG_DIR, Consts.SONG_DIR, Consts.SAVE_SONG_DIR},
+                            new String[]{name_lyric,name_accompany,name_record});
+                    task.execute(URL_lyric,URL_accompany,URL_record);
+                }
                 showProgressDialog();
             }
         });
@@ -93,8 +99,8 @@ public class DownloadPrepareActivity extends Activity {
 
     private void showProgressDialog() {
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("In progress...");// 设置Title
-        progressDialog.setMessage("Loading...");
+        progressDialog.setTitle("请稍后");// 设置Title
+        progressDialog.setMessage("下载中");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setIndeterminate(false);
         progressDialog.setMax(100);
@@ -137,7 +143,7 @@ public class DownloadPrepareActivity extends Activity {
         protected void onProgressUpdate(Integer... progress) {
             progressDialog.setProgress(progress[0]);
             if (rowItems != null) {
-                progressDialog.setMessage("Loading " + (rowItems.size() + 1)
+                progressDialog.setMessage("下载中" + (rowItems.size() + 1)
                         + "/" + taskCount);
             }
         }
@@ -163,30 +169,45 @@ public class DownloadPrepareActivity extends Activity {
             try {
                 url = new URL(urlString);
                 //创建一个HttpURLConnection连接
-                HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-                int lengthOfFile = urlConn.getContentLength();
-                InputStream input = urlConn.getInputStream();
-                //文件夹
-                File dir = new File(dirname);
-                if (!dir.exists()) {
-                    dir.mkdir();
-                }
-                //本地文件
-                File file = new File(dirname + filename);
-                if (!file.exists()) {
-                    file.createNewFile();
-                    //写入本地
-                    output = new FileOutputStream(file);
-                    byte buffer[] = new byte[2048];
-                    int inputSize = -1;
-                    long total = 0L;
-                    while ((inputSize = input.read(buffer)) != -1) {
-                        total += inputSize;
-                        publishProgress((int) ((total * 100) / lengthOfFile));
-                        output.write(buffer, 0, inputSize);
+                OkHttpClient client = new OkHttpClient();
+                //创建一个Request
+                Request request = new Request.Builder()
+                        .get()
+                        .url(url)
+                        .build();
+                //通过client发起请求
+                Call call=client.newCall(request);
+                Response response=call.execute();
+
+                InputStream input;
+                if (response.code() / 100 == 2) { // 2xx code means success
+                    long lengthOfFile = response.body().contentLength();
+                    input = response.body().byteStream();
+                    //文件夹
+                    File dir = new File(dirname);
+                    if (!dir.exists()) {
+                        dir.mkdir();
                     }
-                    output.flush();
+                    //本地文件
+                    File file = new File(dirname + filename);
+                    if (!file.exists()) {
+                        file.createNewFile();
+                        //写入本地
+                        output = new FileOutputStream(file);
+                        byte buffer[] = new byte[4096];
+                        int inputSize = -1;
+                        long total = 0L;
+                        while ((inputSize = input.read(buffer)) != -1) {
+                            total += inputSize;
+                            publishProgress((int) ((total * 100) / lengthOfFile));
+                            output.write(buffer, 0, inputSize);
+                        }
+                        output.flush();
+                    }
+                } else {
+                    System.out.println("错误码"+response.code());
                 }
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {

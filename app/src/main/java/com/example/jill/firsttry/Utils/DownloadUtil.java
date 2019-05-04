@@ -81,7 +81,7 @@ public class DownloadUtil {
                 System.out.println("发送请求了");
                 System.out.println("请求网址"+url);
                 InputStream is = null;
-                byte[] buf = new byte[2048];
+                byte[] buf = new byte[8192];
                 int len;
                 FileOutputStream fos = null;
                 // 储存下载文件的目录

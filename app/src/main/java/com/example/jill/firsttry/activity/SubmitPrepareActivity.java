@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -24,33 +25,50 @@ import com.example.jill.firsttry.model.global_val.AppContext;
 import com.example.jill.firsttry.model.response.BaseResponse;
 import com.google.gson.Gson;
 
+import org.w3c.dom.Text;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import java.util.List;
+import java.util.UUID;
+
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import static android.provider.Telephony.Mms.Part.TEXT;
 
 /**
  * 进入准备界面：试听或长传或修改
  */
 public class SubmitPrepareActivity extends Activity {
     private Button submitButton;
+    private Button listenButton;
+    private Button modifyButton;
     private TextView singer;
     private TextView songName;
     private ImageUtil songIcon;
     private ProgressDialog progressDialog;
     private Song currentSong;
     private UserRecord currentRecord;
+
+    private Song fakeSong;
+    private UserRecord fakeUserRecord;
 
     public SubmitPrepareActivity() {
     }
@@ -115,18 +133,40 @@ public class SubmitPrepareActivity extends Activity {
         });
         thread.start();
         songIcon.setImageURL("http://58.87.73.51:8080/musicshop/" + currentSong.getAlbumPic());
+        //试听
+        listenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ListenOriginalActivity.actionStart(SubmitPrepareActivity.this, currentSong, currentRecord);
+            }
+        });
+        //上传
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 System.out.println("执行了click");
                 String fileName = Consts.SAVE_SONG_DIR+currentSong.getSname() + "-" + currentSong.getSingerName() + "-" + currentSong.getAlbum() + "-" + currentSong.getSid()+"-"+currentRecord.getTime()+ "-0.mp3";
-                showProgressDialog();
+                showProgressUploadDialog();
                 UploadTask uploadTask=new UploadTask(SubmitPrepareActivity.this,currentSong);
                 //要上传的文件,url,sid
                 uploadTask.execute(fileName,Consts.addRecordURL,Integer.valueOf(currentSong.getSid()).toString());
 
             }
         });
+        //修改
+       // final String name_record= fakeSong.getSname() + "-" + fakeSong.getSingerName() + "-" + fakeSong.getAlbum() + "-" + fakeSong.getSid() + fakeUserRecord.getTime() + "-" + fakeUserRecord.getRid()+".mp3";
+        //final String URL_record = Consts.ENDPOINT+fakeUserRecord.getFilepath();
+//        modifyButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //下载原声录音
+//                DownloadTask task = new DownloadTask(SubmitPrepareActivity.this,
+//                        new String[]{Consts.SAVE_SONG_DIR},
+//                        new String[]{name_record});
+//                task.execute(URL_record);
+//                showProgressDialog();
+//            }
+//        });
     }
 
     /**
@@ -300,11 +340,22 @@ public class SubmitPrepareActivity extends Activity {
     /**
      * 上传进度对话框
      */
-    private void showProgressDialog() {
+    private void showProgressUploadDialog() {
         System.out.println("显示对话框");
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("In progress...");// 设置Title
-        progressDialog.setMessage("Loading...");
+        progressDialog.setTitle("请稍后...");// 设置Title
+        progressDialog.setMessage("上传中...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setIndeterminate(false);
+        progressDialog.setMax(100);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    private void showProgressDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("请稍后");// 设置Title
+        progressDialog.setMessage("下载中");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setIndeterminate(false);
         progressDialog.setMax(100);
@@ -313,11 +364,135 @@ public class SubmitPrepareActivity extends Activity {
     }
 
     /**
+     * 异步下载任务
+     */
+    @SuppressLint("StaticFieldLeak")
+    private class DownloadTask extends
+            AsyncTask<String, Integer, List<Integer>> {
+
+        private Activity context;
+        private String[] dirs;
+        private String[] names;
+        List<Integer> rowItems;
+        int taskCount;
+
+        DownloadTask(Activity context, String[] dirs, String[] names) {
+            this.context = context;
+            this.dirs = dirs;
+            this.names = names;
+        }
+
+        @Override
+        protected List<Integer> doInBackground(String... urls) {
+            taskCount = urls.length;
+            rowItems = new ArrayList<Integer>();
+            int tmp=0;
+            for (String url : urls) {
+                download(url,dirs[tmp],names[tmp]);
+                rowItems.add(1);
+                tmp++;
+            }
+            return rowItems;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            progressDialog.setProgress(progress[0]);
+            if (rowItems != null) {
+                progressDialog.setMessage("修改中" + (rowItems.size() + 1)
+                        + "/" + taskCount);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Integer> rowItems) {
+            progressDialog.setTitle("完成");
+            progressDialog.setMessage("修改成功!");
+            progressDialog.setCancelable(true);
+            progressDialog.setButton(TEXT, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ListenOriginalActivity.actionStart(SubmitPrepareActivity.this, fakeSong, fakeUserRecord);
+                }
+            });
+        }
+
+        /**
+         * 下载Image
+         *
+         * @param urlString
+         * @return
+         */
+        private void download(String urlString, String dirname, String filename) {
+            int count = 0;
+
+            URL url;
+            OutputStream output = null;
+
+            try {
+                url = new URL(urlString);
+                //创建一个HttpURLConnection连接
+                OkHttpClient client = new OkHttpClient();
+                //创建一个Request
+                Request request = new Request.Builder()
+                        .get()
+                        .url(url)
+                        .build();
+                //通过client发起请求
+                Call call=client.newCall(request);
+                Response response=call.execute();
+
+                InputStream input;
+                if (response.code() / 100 == 2) { // 2xx code means success
+                    long lengthOfFile = response.body().contentLength();
+                    input = response.body().byteStream();
+                    //文件夹
+                    File dir = new File(dirname);
+                    if (!dir.exists()) {
+                        dir.mkdir();
+                    }
+                    //本地文件
+                    File file = new File(dirname + filename);
+                    if (!file.exists()) {
+                        file.createNewFile();
+                        //写入本地
+                        output = new FileOutputStream(file);
+                        byte buffer[] = new byte[4096];
+                        int inputSize = -1;
+                        long total = 0L;
+                        while ((inputSize = input.read(buffer)) != -1) {
+                            total += inputSize;
+                            publishProgress((int) ((total * 100) / lengthOfFile));
+                            output.write(buffer, 0, inputSize);
+                        }
+                        output.flush();
+                    }
+                } else {
+                    System.out.println("错误码"+response.code());
+                }
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    output.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
      * 绑定界面组件
      */
     private void initComponent() {
         // 绑定按钮
         submitButton = findViewById(R.id.button_submit_in_submit);
+        listenButton=findViewById(R.id.button_listen_in_submit);
+        modifyButton=findViewById(R.id.button_modify_in_submit);
         // 绑定text
         singer = findViewById(R.id.prepare_text_singer);
         songName = findViewById(R.id.prepare_text_songName);
