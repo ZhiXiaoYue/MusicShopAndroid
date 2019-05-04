@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AppContext app ;
     private List<UserRecord> recordList = new ArrayList<>();
     private int flag;
+    private TextView noneRecord;
     ImageView recommandImage;
     ImageView userRecordImage;
     @SuppressLint("HandlerLeak")
@@ -222,12 +223,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         flag = 0; //判断是推荐还是用户记录
         recommandImage = findViewById(R.id.recommandToYou);
         userRecordImage = findViewById(R.id.user_record_in_main);
+        noneRecord = findViewById(R.id.none_record);
         UserBean user= app.getUser();
         TextView u_name = findViewById(R.id.act_m_user_name);
         if(app.getState() == null) { //如果用户没有登录
             Recommandation rcd = new Recommandation();
             songList = rcd.getRecommendation();
             userRecordImage.setVisibility(View.INVISIBLE); //显示推荐图片
+            noneRecord.setVisibility(View.INVISIBLE);
             recommandImage.setVisibility(View.VISIBLE);
             flag = 0;
             u_name.setText("请先登录");
@@ -285,8 +288,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     returnMessage= returnMessage.replaceAll("\\\\\"", "\"");
                                     UserRecord ur =  new Gson().fromJson(returnMessage, UserRecord.class);
                                     recordList.add(ur);
-                                    songList.add(ur.getMusic());
-                                    System.out.println("测试"+ur.getMusic().getSingerName());
+                                    if(ur.getMusic() == null)
+                                        noneRecord.setVisibility(View.VISIBLE);
+                                    else
+                                        songList.add(ur.getMusic());
                                 }
                             else{
                                     Toast.makeText(MainActivity.this, "服务器发生错误，请联系客服", Toast.LENGTH_LONG).show();
@@ -359,6 +364,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        noneRecord.setVisibility(View.INVISIBLE);
         recommandImage.setVisibility(View.INVISIBLE);
         userRecordImage.setVisibility(View.VISIBLE); //显示记录
             u_name.setText(user.getName());
