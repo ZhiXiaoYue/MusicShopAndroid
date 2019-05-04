@@ -25,6 +25,7 @@ public class Consts {
     public static final String COMPANGY_DIR=DIR+"Company/";
     public static final String LYRIC_DIR=DIR+"Lyric/";
     public static final String SONG_DIR=DIR+"Song/";
+    public static final String MODIFY_SONG_DIR=DIR+"ModifySong/";
 
     public static final String Cache_DIR=DIR+"Cache/";
 

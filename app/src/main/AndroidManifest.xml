@@ -54,7 +54,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.MyModifyActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".activity.RecordPrepareActivity"
             android:theme="@style/AppTheme.NoActionBar" />
