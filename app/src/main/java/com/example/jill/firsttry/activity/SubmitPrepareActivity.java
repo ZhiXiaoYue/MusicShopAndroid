@@ -79,6 +79,9 @@ public class SubmitPrepareActivity extends Activity {
         //从searchctivity获取用户选择的歌曲
         currentSong = (Song) getIntent().getSerializableExtra("song_data");
         currentRecord=(UserRecord)getIntent().getSerializableExtra("record_data");
+        if(currentRecord.getRid() != 0){
+            submitButton.setVisibility(View.INVISIBLE);
+        }
         //设置界面信息
         singer.setText(currentSong.getSingerName());
         songName.setText(currentSong.getSname());

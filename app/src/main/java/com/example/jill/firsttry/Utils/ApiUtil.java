@@ -1,45 +1,45 @@
-//package com.example.jill.firsttry.Utils;
-//
-//import android.annotation.SuppressLint;
-//import android.app.Activity;
-//import android.content.Intent;
-//import android.os.Build;
-//import android.support.annotation.NonNull;
-//import android.os.Handler;
-//import android.os.Message;
-//import android.support.annotation.RequiresApi;
-//import android.util.Log;
-//import android.widget.Toast;
-//
-//import com.example.jill.firsttry.activity.LoginAcitivity;
-//import com.example.jill.firsttry.model.Song;
-//import com.example.jill.firsttry.model.global_val.AppContext;
-//import com.example.jill.firsttry.model.response.BaseResponse;
-//import com.example.jill.firsttry.model.search.AllRecordBean;
-//import com.example.jill.firsttry.model.search.SearchBean;
-//import com.google.gson.Gson;
-//
-//import java.io.IOException;
-//
-//import okhttp3.Call;
-//import okhttp3.Callback;
-//import okhttp3.Response;
-//
-//import static android.content.ContentValues.TAG;
-//import com.example.jill.firsttry.model.UserRecord;
-//import com.example.jill.firsttry.model.global_val.AppContext;
-//import com.example.jill.firsttry.model.global_val.UserBean;
-//import com.example.jill.firsttry.model.response.BaseResponse;
-//import com.google.gson.Gson;
-//
-//import java.io.IOException;
-//import java.util.ArrayList;
-//import java.util.Objects;
-//
-//import okhttp3.OkHttpClient;
-//import okhttp3.Request;
-//import okhttp3.Response;
-//
+package com.example.jill.firsttry.Utils;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.RequiresApi;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.example.jill.firsttry.activity.LoginAcitivity;
+import com.example.jill.firsttry.model.Song;
+import com.example.jill.firsttry.model.global_val.AppContext;
+import com.example.jill.firsttry.model.response.BaseResponse;
+import com.example.jill.firsttry.model.search.AllRecordBean;
+import com.example.jill.firsttry.model.search.SearchBean;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
+import static android.content.ContentValues.TAG;
+import com.example.jill.firsttry.model.UserRecord;
+import com.example.jill.firsttry.model.global_val.AppContext;
+import com.example.jill.firsttry.model.global_val.UserBean;
+import com.example.jill.firsttry.model.response.BaseResponse;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Objects;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 //public class ApiUtil {
 //    /**
 //     * 根据sid查询歌曲信息
@@ -57,7 +57,7 @@
 //            Log.d("现在的token", ((AppContext) activity.getApplication()).getUser().getData());
 //        }
 //        final Song[] song=new Song[1];
-//        HttpUtil.sendOkHttpRequestWithHeader(Consts.ENDPOINT + "api/search?keyword=" + sid + "&type=" + Consts.SEARCH_TYPE_FOR_SID, new Callback() {
+// HttpUtil.sendOkHttpRequestWithHeader(Consts.ENDPOINT + "api/search?keyword=" + sid + "&type=" + Consts.SEARCH_TYPE_FOR_SID, new Callback() {
 //            @Override
 //            public void onFailure(@NonNull Call call, @NonNull IOException e) {
 //                //Toast.makeText(MainActivity.this,"failed",Toast.LENGTH_SHORT);
@@ -97,10 +97,10 @@
 ////                                        Toast.makeText(activity, "未搜索到相关资源", Toast.LENGTH_SHORT).show();
 ////                                    }
 ////                                });
-////                            } else {
-////                                responseString = responseString.replaceAll("\"\\[", "\\[");
-////                                responseString = responseString.replaceAll("\\]\"", "\\]");
-////                                responseString = responseString.replaceAll("\\\\\"", "\"");
+//                            } else {
+//                                responseString = responseString.replaceAll("\"\\[", "\\[");
+//                                responseString = responseString.replaceAll("\\]\"", "\\]");
+//                                responseString = responseString.replaceAll("\\\\\"", "\"");
 ////                                System.out.println(responseString);
 ////                                Log.d(TAG, "获得请求数据" + responseString);
 ////                               song[0]= searchAfter(responseString);
